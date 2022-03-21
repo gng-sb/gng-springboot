@@ -1,0 +1,65 @@
+# ==============================
+# Server configurations
+# ==============================
+server:
+  port: 8080
+
+# ==============================
+# Database configurations
+# ==============================
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(Gy2hW7Y9vVX1JnBQ8JhZBCkKjncuQKtkIZsc4h72dqeA7QeaCMDfoZvWkN1IMAE+axWpbFDJh/oBiysGNloK1QmJcekLdZw7ciEavSsKe5OFpEPpWDV3KxuDnKKljqg1TxaUxgNwxqk=)
+    username: ENC(nOK+URH2mcp9I5rujkWpKwYviaqHHnB3)
+    password: ENC(JbJvMEJZmMFT5IVaZUaoNDyzqqyy6vrjPNCbDOyoegw=)
+    
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      # create : 기존 테이블 삭제 후 재생성
+      # create-drop : create + 종료시점에 테이블 삭제
+      # update : 변경분만 반영
+      # validate : 엔티티와 테이블 정상 매핑만 확인
+      # none : 사용하지 않음
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# ==============================
+# Jasypt configurations
+# ==============================
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    key-obtention-iterations: 1000
+    pool-size: 1
+    provider-name: SunJCE
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    string-output-type: base64
+    password: ${jasypt.encryptor.password}
+
+# ==============================
+# Logging configurations
+# ==============================
+logging:
+  file:
+    name: logs/gng-springboot.log
+  level:
+    root: debug
+    org.springframework.web: info
+    com.zaxxer.hikari: warn
+    sun.rmi: warn
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-20thread][%-30logger][%method:%line] - %msg%n"
+    file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-4relative][%thread][%-30logger]{35} - %msg%n"
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 7
+      file-name-pattern: "logs/backup/gng-springboot.log.%d{yyyy-MM-dd}-%i.zip"
