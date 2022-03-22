@@ -69,11 +69,11 @@ logging:
 # ==============================
 jwt:
   password: ENC(M5FL+GNorGE3OmRoVsndLShoXyo8PfS/96XPyqeahgk=)
-  
+  valid-time: 3600
   
 # ==============================
 # Common configurations
 # ==============================
 application:
-  name: GnG springboot
+  name: GNGSB
   version: 1.0.0

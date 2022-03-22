@@ -13,5 +13,10 @@
     "name": "application.version",
     "type": "java.lang.String",
     "description": "Application version"
+  },
+  {
+    "name": "jwt.valid-time",
+    "type": "java.lang.String",
+    "description": "JWT expire time(Seconds)"
   }
 ]}

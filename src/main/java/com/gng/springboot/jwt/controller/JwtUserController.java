@@ -23,6 +23,7 @@ public class JwtUserController {
 	public ResponseDto<String> registerUser(
 			@RequestBody(required = true) GngUserDto gngUserDto
 			) {
+		// TODO: 비밀번호 저장 시 암호화 필요
 		return jwtUserService.registerUser(gngUserDto);
 	}
 }

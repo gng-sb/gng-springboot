@@ -34,13 +34,13 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtTokenProvider{
 	
 	private final UserDetailsService userDetailService;
+
+	@Value("${jwt.valid-time}")
+	private Long tokenValidTime;
 	
 	@Value("${jwt.password}")
 	private String jwtKey;
 	private String jwtBase64Key;
-	
-	// 토큰 유효시간
-	private Long tokenValidTime = 30 * 60 * 1000L;
 	
 	@PostConstruct
 	public void init() {
