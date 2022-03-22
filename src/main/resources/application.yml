@@ -63,3 +63,17 @@ logging:
       max-file-size: 50MB
       max-history: 7
       file-name-pattern: "logs/backup/gng-springboot.log.%d{yyyy-MM-dd}-%i.zip"
+
+# ==============================
+# Logging configurations
+# ==============================
+jwt:
+  password: ENC(M5FL+GNorGE3OmRoVsndLShoXyo8PfS/96XPyqeahgk=)
+  
+  
+# ==============================
+# Common configurations
+# ==============================
+application:
+  name: GnG springboot
+  version: 1.0.0

@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "jwt.password",
+    "type": "java.lang.String",
+    "description": "JWT secret key"
+  },
+  {
+    "name": "application.name",
+    "type": "java.lang.String",
+    "description": "Application name"
+  },
+  {
+    "name": "application.version",
+    "type": "java.lang.String",
+    "description": "Application version"
+  }
+]}

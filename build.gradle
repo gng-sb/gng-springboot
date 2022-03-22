@@ -13,22 +13,37 @@ repositories {
 }
 
 dependencies {
-	// Spring boot
+	// Spring
 	implementation 'org.springframework.boot:spring-boot-starter'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	
+	// Spring security
+	implementation 'org.springframework.security:spring-security-core:5.6.2'
+	implementation 'org.springframework.security:spring-security-web:5.6.2'
+	implementation 'org.springframework.security:spring-security-config:5.6.2'
+	
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 	
 	// Common
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
 	// Lombok
-	implementation 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 	
 	// Database
 	runtimeOnly 'mysql:mysql-connector-java'
-	implementation 'com.h2database:h2:2.1.210'
+	runtimeOnly 'com.h2database:h2'
 	
 	// JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	
+	// Swagger
+	implementation 'io.swagger:swagger-annotations:1.6.5'
 	
 	// Util
 	implementation 'com.google.guava:guava:31.1-jre'
@@ -36,7 +51,8 @@ dependencies {
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot:3.0.4'
 	
 	// Test
-	testImplementation 'com.h2database:h2'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
