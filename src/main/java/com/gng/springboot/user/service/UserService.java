@@ -6,10 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.gng.springboot.commons.constant.Constants.UserStatus;
-import com.gng.springboot.commons.exception.custom.AuthenticationException;
-import com.gng.springboot.commons.exception.custom.UserExistException;
+import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.model.ResponseCode;
-import com.gng.springboot.commons.model.ResponseDto;
 import com.gng.springboot.commons.util.PasswordEncryptionUtil;
 import com.gng.springboot.user.model.UserEntity;
 import com.gng.springboot.user.model.UserLoginDto;
@@ -42,31 +40,23 @@ public class UserService implements UserDetailsService {
 	 * @param userRegisterDto
 	 * @return
 	 */
-	public ResponseDto<String> registerUser(UserRegisterDto userRegisterDto) {
-		ResponseDto<String> responseDto = new ResponseDto<>();
+	public String registerUser(UserRegisterDto userRegisterDto) {
+		UserEntity userEntity = UserEntity.builder()
+				.userId(userRegisterDto.getUserId())
+				.userPwd(passwordEncryptionUtil.encrypt(userRegisterDto.getUserPwd()))
+				.userName(userRegisterDto.getUserName())
+				.userStatus(UserStatus.USE.getStatus())
+				.build();
 		
-		try {
-			UserEntity userEntity = UserEntity.builder()
-					.userId(userRegisterDto.getUserId())
-					.userPwd(passwordEncryptionUtil.encrypt(userRegisterDto.getUserPwd()))
-					.userName(userRegisterDto.getUserName())
-					.userStatus(UserStatus.USE.getStatus())
-					.build();
-			
-			// Get user data with userId and check conflict
-			userRepository.findByUserId(userEntity.getUserId()).ifPresent(user -> {
-				throw new UserExistException("동일한 아이디를 가진 사용자가 존재합니다.");
-			});
-			
-			// Insert registeration data
-			String id = userRepository.save(userEntity).getUserId();
-			
-			responseDto.set(ResponseCode.CREATE_SUCCESS, id);
-		} catch(UserExistException ex) {
-			responseDto.set(ResponseCode.CREATE_FAILURE, ex);
-		}
+		// Get user data with userId and check conflict
+		userRepository.findByUserId(userEntity.getUserId()).ifPresent(user -> {
+			throw new BusinessException(ResponseCode.USER_ID_CONFLICT);
+		});
 		
-		return responseDto;
+		// Insert registeration data
+		String id = userRepository.save(userEntity).getUserId();
+		
+		return id;
 	}
 	
 	/**
@@ -74,26 +64,15 @@ public class UserService implements UserDetailsService {
 	 * @param userLoginDto
 	 * @return
 	 */
-	public ResponseDto<UserEntity> loginUser(UserLoginDto userLoginDto) {
-		ResponseDto<UserEntity> responseDto = new ResponseDto<>();
+	public UserLoginDto loginUser(UserLoginDto userLoginDto) {
+		// Get user data with userId
+		UserEntity userEntity = userRepository.findByUserId(userLoginDto.getUserId())
+				.orElseThrow(() -> new BusinessException(ResponseCode.USER_ID_FAILURE));
 		
-		try {
-			// Get user data with userId
-			UserEntity userEntity = userRepository.findByUserId(userLoginDto.getUserId())
-					.orElseThrow(() -> new AuthenticationException("아이디가 존재하지 않습니다."));
-			
-			if(!passwordEncryptionUtil.isValidUserPwd(userEntity.getUserPwd(), userLoginDto.getUserPwd())) {
-				throw new AuthenticationException("비밀번호가 일치하지 않습니다.");
-			}
-			
-			// Remove encrypted password from response
-			userEntity.setUserPwd("");
-			
-			responseDto.set(ResponseCode.LOGIN_SUCCESS, userEntity);
-		} catch(AuthenticationException ex) {
-			responseDto.set(ResponseCode.LOGIN_FAILURE, ex);
+		if(!passwordEncryptionUtil.isValidUserPwd(userEntity.getUserPwd(), userLoginDto.getUserPwd())) {
+			throw new BusinessException(ResponseCode.PASSWORD_FAILURE);
 		}
 		
-		return responseDto;
+		return UserLoginDto.of(userEntity);
 	}
 }

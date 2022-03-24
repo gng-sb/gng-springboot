@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.gng.springboot.commons.exception.custom.CustomException;
-import com.gng.springboot.commons.exception.custom.JwtAuthenticationException;
-import com.gng.springboot.commons.exception.model.ErrorResponse;
+import com.gng.springboot.commons.exception.custom.BusinessException;
+import com.gng.springboot.commons.exception.model.ErrorResponseDto;
 import com.gng.springboot.commons.exception.model.ResponseCode;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,29 +28,16 @@ import lombok.extern.slf4j.Slf4j;
 public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**
-	 * Custom error
+	 * Business error
 	 * @param e
 	 * @return
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler({CustomException.class})
-	protected ErrorResponse handleCustomException(Exception ex) {
-		log.error("handleCustomException() : ", ex);
+	@ExceptionHandler({BusinessException.class})
+	protected ErrorResponseDto handleBusinessException(BusinessException bex) {
+		log.error("handleBusinessException() : ", bex);
 		
-		return ErrorResponse.of(ResponseCode.INTERNAL_SERVER, ex.getMessage());
-	}
-
-	/**
-	 * Jwt authentication error
-	 * @param e
-	 * @return
-	 */
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler({JwtAuthenticationException.class})
-	protected ErrorResponse handleJwtAuthenticationException(Exception ex) {
-		log.error("handleJwtAuthenticationException() : ", ex);
-		
-		return ErrorResponse.of(ResponseCode.USER_AUTHENTICATION, ex.getMessage());
+		return new ErrorResponseDto(bex.getResponseCode());
 	}
 	
 	/**
@@ -61,10 +47,10 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler({Exception.class})
-	protected ErrorResponse handleException(Exception ex) {
-		log.error("handleException() : ", ex);
+	protected ErrorResponseDto handleUnexpectedException(Exception ex) {
+		log.error("handleUnexpectedException() : ", ex);
 		
-		return ErrorResponse.of(ResponseCode.INTERNAL_SERVER, ex.getMessage());
+		return new ErrorResponseDto(ResponseCode.INTERNAL_SERVER);
 	}
 	
 	/**
@@ -72,7 +58,7 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return new ResponseEntity<>(ErrorResponse.of(ResponseCode.BAD_REQUEST, ex.getMessage()), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(new ErrorResponseDto(ResponseCode.BAD_REQUEST), HttpStatus.BAD_REQUEST);
 	}
 	
 	/**
@@ -81,7 +67,7 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return new ResponseEntity<>(ErrorResponse.of(ResponseCode.METHOD_NOT_ALLOWED, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+		return new ResponseEntity<>(new ErrorResponseDto(ResponseCode.METHOD_NOT_ALLOWED), HttpStatus.METHOD_NOT_ALLOWED);
 	}
 	
 }

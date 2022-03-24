@@ -4,9 +4,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+/**
+ * Password encryption class
+ * @author gchyoo
+ *
+ */
 @RequiredArgsConstructor
 @Component
 public class PasswordEncryptionUtil {

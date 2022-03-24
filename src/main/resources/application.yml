@@ -19,7 +19,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        '[format_sql]': true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       # create : 기존 테이블 삭제 후 재생성
@@ -55,11 +55,12 @@ logging:
     name: logs/gng-springboot.log
   level:
     root: debug
-    org.springframework.web: info
-    com.zaxxer.hikari: warn
-    sun.rmi: warn
-    org.apache: warn
-    org.hibernate.hql.internal: warn
+    '[org.springframework.web]': info
+    '[com.zaxxer.hikari]': warn
+    '[sun.rmi]': warn
+    '[org.apache]': warn
+    '[org.hibernate.hql.internal]': warn
+    '[javax.management.remote.rmi]': warn
   
   pattern:
     console: "[%d{yyyy-MM-dd HH:mm:ss}][%highlight(%-5level)][%magenta(%-12.12thread)][%green(%-37logger{36})][%cyan(%method:%line)] - %msg%n"

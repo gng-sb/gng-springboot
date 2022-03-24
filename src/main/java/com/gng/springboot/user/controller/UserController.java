@@ -2,13 +2,12 @@ package com.gng.springboot.user.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gng.springboot.commons.exception.model.ResponseCode;
 import com.gng.springboot.commons.model.ResponseDto;
 import com.gng.springboot.user.model.UserLoginDto;
 import com.gng.springboot.user.model.UserRegisterDto;
-import com.gng.springboot.user.model.UserEntity;
 import com.gng.springboot.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-	private final UserService jwtUserService;
+	private final UserService userService;
 	
 	@PostMapping("/register")
 	public ResponseDto<String> registerUser(
@@ -26,15 +25,15 @@ public class UserController {
 			) {
 		log.info("Register user [{}]", UserRegisterDto);
 		
-		return jwtUserService.registerUser(UserRegisterDto);
+		return new ResponseDto<>(ResponseCode.USER_REGISTER_SUCCESS, userService.registerUser(UserRegisterDto));
 	}
 	
 	@PostMapping("/login")
-	public ResponseDto<UserEntity> loginUser(
+	public ResponseDto<UserLoginDto> loginUser(
 			@RequestBody(required = true) UserLoginDto userLoginDto
 			) {
 		log.info("Login user [{}]", userLoginDto);
 		
-		return jwtUserService.loginUser(userLoginDto);
+		return new ResponseDto<>(ResponseCode.LOGIN_SUCCESS, userService.loginUser(userLoginDto));
 	}
 }

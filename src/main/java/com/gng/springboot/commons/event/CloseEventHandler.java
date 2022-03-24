@@ -24,7 +24,7 @@ public class CloseEventHandler implements ApplicationListener<ContextClosedEvent
 	public void onApplicationEvent(ContextClosedEvent event) {
 		
 		log.info("=======================");
-		log.info("{} v{} Start ...", applicationName, applicationVersion);
+		log.info("{} v{} Close ...", applicationName, applicationVersion);
 		log.info("=======================");
 		log.info("Application Close Event");
 		log.info("=======================");

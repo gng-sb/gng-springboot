@@ -21,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gng.springboot.commons.model.BaseEntity;
 
 import io.swagger.annotations.ApiParam;
@@ -57,7 +58,8 @@ public class UserEntity extends BaseEntity implements UserDetails , Serializable
 	@ApiParam(value = "사용자 계정")
 	@Column(name = "user_id")
 	private String userId;
-	
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@ApiParam(value = "사용자 비밀번호")
 	@Column(name = "user_pwd")
 	private String userPwd;
