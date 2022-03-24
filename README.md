@@ -19,6 +19,6 @@ https://themeforest.net/item/emilus-react-admin-template/28400277
 
 # TODO
 - JWT
-- Apache Kafka/REDIS
+- Apache Kafka/Redis
 - Elasticsearch
 - Jenkins/Portainer
