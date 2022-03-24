@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * <pre>
+ * Spring close event handler
+ * 
+ * Execute when application exit
+ * </pre>
+ * @author gchyoo
+ *
+ */
 @Slf4j
 @Component
 public class CloseEventHandler implements ApplicationListener<ContextClosedEvent>{

@@ -1,11 +1,11 @@
 package com.gng.springboot.commons.exception.custom;
 
-import com.gng.springboot.commons.exception.model.ResponseCode;
+import com.gng.springboot.commons.constant.ResponseCode;
 
 import lombok.Getter;
 
 /**
- * Business exception class
+ * Business custom exception
  * @author gchyoo
  *
  */

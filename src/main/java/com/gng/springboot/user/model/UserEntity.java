@@ -34,7 +34,7 @@ import lombok.ToString;
 
 /**
  * gng_users / gng_user_roles table entity
- * @author enemf
+ * @author gchyoo
  *
  */
 @Getter

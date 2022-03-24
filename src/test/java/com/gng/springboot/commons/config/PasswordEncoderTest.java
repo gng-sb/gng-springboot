@@ -16,6 +16,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration;
 
+/**
+ * PasswordEncoder encode/match test
+ * @author gchyoo
+ *
+ */
 @TestPropertySource(locations = "classpath:application.yml")
 @Import(EnableEncryptablePropertiesConfiguration.class)
 @RunWith(SpringJUnit4ClassRunner.class)

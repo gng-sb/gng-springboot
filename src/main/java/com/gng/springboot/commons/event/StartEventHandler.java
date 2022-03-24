@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * <pre>
+ * Spring start event handler
+ * 
+ * Execute when application start
+ * </pre>
+ * @author gchyoo
+ *
+ */
 @Component
 @Slf4j
 public class StartEventHandler implements ApplicationListener<ApplicationStartedEvent> {

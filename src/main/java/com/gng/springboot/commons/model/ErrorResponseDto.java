@@ -1,11 +1,11 @@
-package com.gng.springboot.commons.exception.model;
+package com.gng.springboot.commons.model;
 
-import com.gng.springboot.commons.model.BaseResponseDto;
+import com.gng.springboot.commons.constant.ResponseCode;
 
 import lombok.Getter;
 
 /**
- * Error response class
+ * Error response DTO
  * @author gchyoo
  *
  */

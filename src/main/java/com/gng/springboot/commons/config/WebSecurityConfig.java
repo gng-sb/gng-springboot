@@ -20,6 +20,11 @@ import com.gng.springboot.jwt.filter.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Spring security configuration
+ * @author gchyoo
+ *
+ */
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {

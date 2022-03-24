@@ -1,12 +1,12 @@
 package com.gng.springboot.commons.model;
 
-import com.gng.springboot.commons.exception.model.ResponseCode;
+import com.gng.springboot.commons.constant.ResponseCode;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 /**
- * DTO response for result or expected errors
+ * Response DTO
  * @author gchyoo
  *
  * @param <T>
@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 public class ResponseDto<T> extends BaseResponseDto {
 
-	@ApiModelProperty(position=4, notes="응답 데이터")
+	@ApiModelProperty(position=3, notes="응답 데이터")
 	private T result;
 	
 	public ResponseDto(final ResponseCode responseCode) {

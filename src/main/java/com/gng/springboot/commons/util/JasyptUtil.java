@@ -19,6 +19,11 @@ public class JasyptUtil {
 		this.key = key;
 	}
 	
+	/**
+	 * Jasypt encryption
+	 * @param pwd
+	 * @return
+	 */
 	public String encrypt(String pwd) {;
 		try {
 			pbeEnc.setAlgorithm("PBEWithMD5AndDES");
@@ -32,6 +37,11 @@ public class JasyptUtil {
 		return password;
 	}
 	
+	/**
+	 * Jasypt decryption
+	 * @param pwd
+	 * @return
+	 */
 	public String decrypt(String pwd) {
 		try {
 			pbeEnc.setAlgorithm("PBEWithMD5AndDES");

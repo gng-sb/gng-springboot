@@ -5,9 +5,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.constant.Constants.UserStatus;
 import com.gng.springboot.commons.exception.custom.BusinessException;
-import com.gng.springboot.commons.exception.model.ResponseCode;
 import com.gng.springboot.commons.util.PasswordEncryptionUtil;
 import com.gng.springboot.user.model.UserEntity;
 import com.gng.springboot.user.model.UserLoginDto;
@@ -17,6 +17,11 @@ import com.gng.springboot.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * User service
+ * @author gchyoo
+ *
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service

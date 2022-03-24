@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 /**
- * Base entity class
+ * Base entity
  * @author gchyoo
  *
  */

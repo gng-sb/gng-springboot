@@ -4,10 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Enum/constants class
+ * @author gchyoo
+ *
+ */
 public class Constants {
 	
 	/**
-	 * 사용자 권한 enum
+	 * User role enum
 	 * @author gchyoo
 	 *
 	 */
@@ -24,7 +29,7 @@ public class Constants {
 	}
 
 	/**
-	 * 사용자 상태 enum
+	 * User status enum
 	 * @author gchyoo
 	 *
 	 */
