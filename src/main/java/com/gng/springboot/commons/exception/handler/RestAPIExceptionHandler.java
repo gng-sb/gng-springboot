@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.gng.springboot.commons.exception.model.CustomException;
+import com.gng.springboot.commons.exception.custom.CustomException;
+import com.gng.springboot.commons.exception.custom.JwtAuthenticationException;
 import com.gng.springboot.commons.exception.model.ErrorResponse;
-import com.gng.springboot.commons.exception.model.JwtAuthenticationException;
 import com.gng.springboot.commons.exception.model.ResponseCode;
 
 import lombok.extern.slf4j.Slf4j;

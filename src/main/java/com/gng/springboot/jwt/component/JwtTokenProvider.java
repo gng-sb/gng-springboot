@@ -16,10 +16,14 @@ import org.springframework.stereotype.Component;
 
 import com.gng.springboot.commons.constant.Constants.UserRoles;
 
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -129,11 +133,21 @@ public class JwtTokenProvider{
 			return !claims.getBody()
 					.getExpiration()
 					.before(new Date());
+		} catch(SignatureException siex) {
+			log.error("Invalid JWT signature [token={}]", token);
+		} catch(MalformedJwtException malex) {
+			log.error("Invalid token [token={}]", token);
+		} catch(ExpiredJwtException expex) {
+			log.error("Expired token [token={}]", token);
+		} catch(UnsupportedJwtException unex) {
+			log.error("Unsupported token [token={}]", token);
+		} catch(IllegalArgumentException ilex) {
+			log.error("Empty token [token={}]", token);
 		} catch(Exception ex) {
-			log.debug("Invalid token [token={}]", token);
-			
-			return false;
+			log.error("Exception occurred in isTokenValid() [token={}]", token, ex);
 		}
+		
+		return false;
 	}
 	
 }

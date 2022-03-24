@@ -1,4 +1,4 @@
-package com.gng.springboot.commons.exception.model;
+package com.gng.springboot.commons.exception.custom;
 
 public class JwtAuthenticationException extends RuntimeException {
 

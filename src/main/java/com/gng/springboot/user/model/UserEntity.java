@@ -1,4 +1,4 @@
-package com.gng.springboot.jwt.model;
+package com.gng.springboot.user.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,10 +41,10 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "userPwd")
 @Entity(name = "gng_users")
 @Table(name = "gng_users")
-public class GngUserEntity extends BaseEntity implements UserDetails , Serializable{
+public class UserEntity extends BaseEntity implements UserDetails , Serializable{
 	private static final long serialVersionUID = 739282898877248753L;
 
 	@Id
