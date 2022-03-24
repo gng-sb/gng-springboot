@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -40,11 +40,12 @@ import lombok.ToString;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @ToString(exclude = "userPwd")
 @Entity(name = "gng_users")
 @Table(name = "gng_users")
 public class UserEntity extends BaseEntity implements UserDetails , Serializable{
+	
 	private static final long serialVersionUID = 739282898877248753L;
 
 	@Id
@@ -77,14 +78,14 @@ public class UserEntity extends BaseEntity implements UserDetails , Serializable
 	@Column(name = "user_roles", columnDefinition = "TEXT")
 	@Builder.Default
 	private List<String> userRoles = new ArrayList<>();
-
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.userRoles.stream()
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 	}
-
+	
 	@Override
 	public String getUsername() {
 		return userId;
