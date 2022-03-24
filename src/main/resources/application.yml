@@ -30,6 +30,9 @@ spring:
       ddl-auto: validate
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  output:
+    ansi:
+      enabled: always
 
 # ==============================
 # Jasypt configurations
@@ -55,9 +58,12 @@ logging:
     org.springframework.web: info
     com.zaxxer.hikari: warn
     sun.rmi: warn
+    org.apache: warn
+    org.hibernate.hql.internal: warn
+  
   pattern:
-    console: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-20thread][%-30logger][%method:%line] - %msg%n"
-    file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-4relative][%thread][%-30logger]{35} - %msg%n"
+    console: "[%d{yyyy-MM-dd HH:mm:ss}][%highlight(%-5level)][%magenta(%-12.12thread)][%green(%-37logger{36})][%cyan(%method:%line)] - %msg%n"
+    file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-4relative][%thread][%-37logger{36}] - %msg%n"
   logback:
     rollingpolicy:
       max-file-size: 50MB
