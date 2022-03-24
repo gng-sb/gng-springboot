@@ -1,24 +1,35 @@
-# gng-springboot(Backend)
+> # gng-springboot(Backend)
 
-## Tech stack
+- ## Tech stack
+```
 - Java 8
 - Spring boot
 - Gradle
 - MySQL
 - Spring data JPA
+```
 
+---
 
-# gng-react(Frontend)
+> # gng-react(Frontend)
 
-## Tech stack
+- ## Tech stack
+```
 - ReactJS
 - Redux
+```
 
-## Frontend template
+- ## Frontend template
+```
 https://themeforest.net/item/emilus-react-admin-template/28400277
+```
 
-# TODO
+---
+
+> # TODO list
+```
 - JWT
 - Apache Kafka/Redis
 - Elasticsearch
 - Jenkins/Portainer
+```
