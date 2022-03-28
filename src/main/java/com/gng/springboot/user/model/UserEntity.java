@@ -73,13 +73,13 @@ public class UserEntity extends BaseEntity implements UserDetails, Serializable 
 	@Column(name = "user_status", columnDefinition = "BIT", length=1)
 	private int userStatus;
 
-	@Builder.Default
-	@ElementCollection(fetch = FetchType.EAGER)
+	@Builder.Default // Default value to new HashSet
+	@ElementCollection(fetch = FetchType.EAGER) // Immediate loading
 	@CollectionTable(
-			name = "gng_user_roles",
-			joinColumns = @JoinColumn(name = "gng_user_id", referencedColumnName = "gng_user_id")
+			name = "gng_user_roles", // Table name
+			joinColumns = @JoinColumn(name = "gng_user_id", referencedColumnName = "gng_user_id") // Join column name
 	)
-	@Column(name = "user_role")
+	@Column(name = "user_role") // RoleTypes column name
 	private Set<RoleTypes> userRoleTypeSet = new HashSet<>();
 	
 	public void addUserRoleType(RoleTypes roleType) {

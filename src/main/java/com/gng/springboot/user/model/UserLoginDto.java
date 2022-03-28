@@ -1,5 +1,7 @@
 package com.gng.springboot.user.model;
 
+import javax.persistence.Transient;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -29,8 +31,8 @@ public class UserLoginDto {
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String userPwd;
-
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	
+	@Transient
 	private String jwt;
 	
 	private UserLoginDto(UserEntity userEntity, String jwt) {
