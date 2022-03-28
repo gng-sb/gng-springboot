@@ -26,15 +26,19 @@ import lombok.ToString;
 @Component
 public class UserLoginDto {
 	private String userId;
-
+	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String userPwd;
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String jwt;
 	
-	private UserLoginDto(UserEntity userEntity) {
+	private UserLoginDto(UserEntity userEntity, String jwt) {
 		BeanUtils.copyProperties(userEntity, this);
+		this.jwt = jwt;
 	}
 	
-	public static UserLoginDto of(UserEntity userEntity) {
-		return new UserLoginDto(userEntity);
+	public static UserLoginDto of(UserEntity userEntity, String jwt) {
+		return new UserLoginDto(userEntity, jwt);
 	}
 }

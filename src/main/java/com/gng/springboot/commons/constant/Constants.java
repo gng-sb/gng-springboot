@@ -19,9 +19,9 @@ public class Constants {
 	@ToString
 	@Getter
 	@AllArgsConstructor
-	public enum UserRoles {
-		ADMIN("Admin", "/admin/**", "관리자"),
-		USER("User", "/user/**", "사용자");
+	public enum RoleTypes {
+		ROLE_ADMIN("Admin", "/admin/**", "관리자"),
+		ROLE_USER("User", "/user/**", "사용자");
 		
 		private String role;
 		private String matcher;
@@ -36,7 +36,7 @@ public class Constants {
 	@ToString
 	@Getter
 	@AllArgsConstructor
-	public enum UserStatus {
+	public enum UserStatusTypes {
 		USE(1, "활성화"),
 		NOT_USE(0, "비활성화"),
 		BLOCKED(-1, "차단");

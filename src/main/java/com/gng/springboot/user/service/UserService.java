@@ -1,44 +1,32 @@
 package com.gng.springboot.user.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.gng.springboot.commons.constant.Constants.UserStatus;
+import com.gng.springboot.commons.constant.Constants.RoleTypes;
+import com.gng.springboot.commons.constant.Constants.UserStatusTypes;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.util.PasswordEncryptionUtil;
+import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.user.model.UserEntity;
 import com.gng.springboot.user.model.UserLoginDto;
 import com.gng.springboot.user.model.UserRegisterDto;
 import com.gng.springboot.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * User service
  * @author gchyoo
  *
  */
-@Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
+	
 	private final UserRepository userRepository;
 	private final PasswordEncryptionUtil passwordEncryptionUtil;
-	
-	/**
-	 * Load user by username(userId)
-	 */
-	@Override
-	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-		log.debug("Load user by [userId={}]", userId);
-		
-		return userRepository.findByUserId(userId)
-				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다"));
-	}
+	private final JwtTokenProvider jwtTokenProvider;
 	
 	/**
 	 * Register user
@@ -50,8 +38,12 @@ public class UserService implements UserDetailsService {
 				.userId(userRegisterDto.getUserId())
 				.userPwd(passwordEncryptionUtil.encrypt(userRegisterDto.getUserPwd()))
 				.userName(userRegisterDto.getUserName())
-				.userStatus(UserStatus.USE.getStatus())
+				.userStatus(UserStatusTypes.USE.getStatus())
 				.build();
+		
+		// Add role type(ROLE_USER)
+		userEntity.addUserRoleType(RoleTypes.ROLE_USER);
+		userEntity.addUserRoleType(RoleTypes.ROLE_ADMIN);
 		
 		// Get user data with userId and check conflict
 		userRepository.findByUserId(userEntity.getUserId()).ifPresent(user -> {
@@ -78,6 +70,7 @@ public class UserService implements UserDetailsService {
 			throw new BusinessException(ResponseCode.PASSWORD_FAILURE);
 		}
 		
-		return UserLoginDto.of(userEntity);
+		// TODO: JWT create 무한루프 수정
+		return UserLoginDto.of(userEntity, jwtTokenProvider.createToken(userEntity.getUserId(), userEntity.getUserRoleTypeSet()));
 	}
 }

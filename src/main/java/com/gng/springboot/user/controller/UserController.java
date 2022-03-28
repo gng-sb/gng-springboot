@@ -10,6 +10,7 @@ import com.gng.springboot.user.model.UserLoginDto;
 import com.gng.springboot.user.model.UserRegisterDto;
 import com.gng.springboot.user.service.UserService;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,7 @@ public class UserController {
 	 * @param UserRegisterDto
 	 * @return
 	 */
+	@ApiOperation(value = "사용자 등록")
 	@PostMapping("/register")
 	public ResponseDto<String> registerUser(
 			@RequestBody(required = true) UserRegisterDto UserRegisterDto
@@ -48,6 +50,7 @@ public class UserController {
 	 * @param userLoginDto
 	 * @return
 	 */
+	@ApiOperation(value = "사용자 로그인")
 	@PostMapping("/login")
 	public ResponseDto<UserLoginDto> loginUser(
 			@RequestBody(required = true) UserLoginDto userLoginDto

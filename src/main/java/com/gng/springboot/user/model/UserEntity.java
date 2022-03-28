@@ -1,9 +1,9 @@
 package com.gng.springboot.user.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
@@ -22,6 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.model.BaseEntity;
 
 import io.swagger.annotations.ApiParam;
@@ -33,7 +34,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * gng_users / gng_user_roles table entity
+ * gng_users table entity
  * @author gchyoo
  *
  */
@@ -45,7 +46,7 @@ import lombok.ToString;
 @ToString(exclude = "userPwd")
 @Entity(name = "gng_users")
 @Table(name = "gng_users")
-public class UserEntity extends BaseEntity implements UserDetails , Serializable{
+public class UserEntity extends BaseEntity implements UserDetails, Serializable {
 	
 	private static final long serialVersionUID = 739282898877248753L;
 
@@ -72,18 +73,23 @@ public class UserEntity extends BaseEntity implements UserDetails , Serializable
 	@Column(name = "user_status", columnDefinition = "BIT", length=1)
 	private int userStatus;
 
+	@Builder.Default
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
 			name = "gng_user_roles",
-			joinColumns=@JoinColumn(name = "gng_user_id", referencedColumnName = "gng_user_id")
+			joinColumns = @JoinColumn(name = "gng_user_id", referencedColumnName = "gng_user_id")
 	)
-	@Column(name = "user_roles", columnDefinition = "TEXT")
-	@Builder.Default
-	private List<String> userRoles = new ArrayList<>();
+	@Column(name = "user_role")
+	private Set<RoleTypes> userRoleTypeSet = new HashSet<>();
+	
+	public void addUserRoleType(RoleTypes roleType) {
+		this.userRoleTypeSet.add(roleType);
+	}
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.userRoles.stream()
+		return this.userRoleTypeSet.stream()
+				.map(roleTypes -> roleTypes.getRole())
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 	}

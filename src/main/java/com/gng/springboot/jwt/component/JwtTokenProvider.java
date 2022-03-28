@@ -2,7 +2,7 @@ package com.gng.springboot.jwt.component;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import com.gng.springboot.commons.constant.Constants.UserRoles;
+import com.gng.springboot.commons.constant.Constants.RoleTypes;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -59,12 +59,12 @@ public class JwtTokenProvider{
 	 * @param roles
 	 * @return
 	 */
-	public String createToken(String userPk, List<UserRoles> roles) {
-		log.debug("Create token [userPk={}] [roles={}]", userPk, roles);
+	public String createToken(String userPk, Set<RoleTypes> roleTypeSet) {
+		log.debug("Create token [userPk={}] [roleTypeList={}]", userPk, roleTypeSet);
 		
 		Claims claims = Jwts.claims().setSubject(userPk);
 		
-		claims.put("roles", roles);
+		claims.put("roles", roleTypeSet);
 		
 		Date now = new Date();
 		

@@ -14,7 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.gng.springboot.commons.constant.Constants.UserRoles;
+import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.jwt.filter.JwtAuthenticationFilter;
 
@@ -66,8 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Disable session because of token
 				.and()
 				.authorizeRequests()
-				.antMatchers(UserRoles.ADMIN.getMatcher()).hasRole(UserRoles.ADMIN.getRole())
-				.antMatchers(UserRoles.USER.getMatcher()).hasRole(UserRoles.USER.getRole())
+				.antMatchers(RoleTypes.ROLE_ADMIN.getMatcher()).hasRole(RoleTypes.ROLE_ADMIN.getRole())
+				.antMatchers(RoleTypes.ROLE_USER.getMatcher()).hasRole(RoleTypes.ROLE_USER.getRole())
 				.antMatchers("/**").permitAll()
 				.and()
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
