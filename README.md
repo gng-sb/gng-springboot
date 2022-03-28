@@ -4,9 +4,10 @@
 ```
 - Java 8
 - Spring boot
+- Spring security
+- Spring data JPA / hibernate
 - Gradle
 - MySQL
-- Spring data JPA
 ```
 
 ---

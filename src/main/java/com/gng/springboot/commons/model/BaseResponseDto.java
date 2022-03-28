@@ -20,13 +20,22 @@ public class BaseResponseDto {
 
 	@ApiModelProperty(position=2, notes="응답 메시지 내용")
 	protected String message;
-	
+
 	protected BaseResponseDto(final ResponseCode responseCode) {
 		setResponseCode(responseCode);
 	}
-	
-	public void setResponseCode(ResponseCode responseCode) {
+
+	protected BaseResponseDto(final ResponseCode responseCode, final String message) {
+		setResponseCode(responseCode, message);
+	}
+
+	public void setResponseCode(final ResponseCode responseCode) {
 		this.isSuccess = responseCode.isSuccess();
 		this.message = responseCode.getMessage();
+	}
+
+	public void setResponseCode(final ResponseCode responseCode, final String message) {
+		this.isSuccess = responseCode.isSuccess();
+		this.message = message;
 	}
 }

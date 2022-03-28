@@ -36,14 +36,15 @@ public class UserService {
 	public String registerUser(UserRegisterDto userRegisterDto) {
 		UserEntity userEntity = UserEntity.builder()
 				.userId(userRegisterDto.getUserId())
+				.userPlainPwd(userRegisterDto.getUserPwd())
 				.userPwd(passwordEncryptionUtil.encrypt(userRegisterDto.getUserPwd()))
 				.userName(userRegisterDto.getUserName())
 				.userStatus(UserStatusTypes.USE.getStatus())
 				.build();
 		
 		// Add role type(ROLE_USER)
-		userEntity.addUserRoleType(RoleTypes.ROLE_USER);
-		userEntity.addUserRoleType(RoleTypes.ROLE_ADMIN);
+		userEntity.addRoleType(RoleTypes.ROLE_USER);
+		userEntity.addRoleType(RoleTypes.ROLE_ADMIN);
 		
 		// Get user data with userId and check conflict
 		userRepository.findByUserId(userEntity.getUserId()).ifPresent(user -> {
@@ -71,6 +72,6 @@ public class UserService {
 		}
 		
 		// TODO: JWT create 무한루프 수정
-		return UserLoginDto.of(userEntity, jwtTokenProvider.createToken(userEntity.getUserId(), userEntity.getUserRoleTypeSet()));
+		return UserLoginDto.of(userEntity, jwtTokenProvider.createToken(userEntity.getUserId(), userEntity.getRoleTypeSet()));
 	}
 }

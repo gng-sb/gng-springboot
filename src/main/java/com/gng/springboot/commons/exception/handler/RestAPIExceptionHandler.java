@@ -1,5 +1,11 @@
 package com.gng.springboot.commons.exception.handler;
 
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path.Node;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
-
+	
 	/**
 	 * Business error
 	 * @param e
 	 * @return
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler({BusinessException.class})
+	@ExceptionHandler(value = {BusinessException.class})
 	protected ResponseEntity<ErrorResponseDto> handleBusinessException(BusinessException bex) {
 		log.error("handleBusinessException() : ", bex);
 		
@@ -42,12 +48,31 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	/**
+	 * Validation error
+	 * @param bindingResult
+	 * @return
+	 */
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ErrorResponseDto> handleConstraintViolationException(ConstraintViolationException cex) {
+		ConstraintViolation<?> violation = cex.getConstraintViolations().iterator().next();
+		
+		// Get the last node of the violation
+		String field = null;
+		for (Node node : violation.getPropertyPath()) {
+			field = node.getName();
+		}
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new ErrorResponseDto(ResponseCode.BAD_REQUEST, extractErrorMessages(cex), field));
+	}
+	
+	/**
 	 * Unexpected error
 	 * @param e
 	 * @return
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler({Exception.class})
+	@ExceptionHandler(value = {Exception.class})
 	protected ResponseEntity<ErrorResponseDto> handleUnexpectedException(Exception ex) {
 		log.error("handleUnexpectedException() : ", ex);
 		
@@ -74,4 +99,10 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 				.body(new ErrorResponseDto(ResponseCode.METHOD_NOT_ALLOWED));
 	}
 	
+	
+	private String extractErrorMessages(ConstraintViolationException e) {
+		return String.join("\n", e.getConstraintViolations().stream()
+			.map(ConstraintViolation::getMessage)
+			.collect(Collectors.toList()));
+	}
 }

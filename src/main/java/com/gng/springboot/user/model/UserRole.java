@@ -48,6 +48,6 @@ public class UserRole extends BaseEntity implements Serializable {
 	private Long gngUserId;
 	
 	@ApiParam(value = "사용자 권한")
-	@Column(name = "user_role", columnDefinition = "VARCHAR")
-	private RoleTypes userRole;
+	@Column(name = "role_type", columnDefinition = "VARCHAR")
+	private RoleTypes roleType;
 }
