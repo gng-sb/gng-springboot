@@ -1,6 +1,8 @@
 package com.gng.springboot.user.model;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.springframework.stereotype.Component;
 
@@ -27,11 +29,13 @@ import lombok.ToString;
 @ToString(exclude = "userPwd")
 @Component
 public class UserRegisterDto {
+	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_USER_ID_EMAIL)
 	private String userId;
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@Pattern(regexp = Constants.REGEXP_PW, message = Constants.VALIDATE_USER_PW_PATTERN)
 	private String userPwd;
-	
-	@NotBlank(message = Constants.VALIDATE_USER_NAME_BLANK)
+
+	@Size(min = 2, max = 20, message = Constants.VALIDATE_USER_NAME_SIZE)
 	private String userName;
 }

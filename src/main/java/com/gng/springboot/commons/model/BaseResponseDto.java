@@ -1,6 +1,9 @@
 package com.gng.springboot.commons.model;
 
+import java.util.List;
+
 import com.gng.springboot.commons.constant.ResponseCode;
+import com.google.common.collect.Lists;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -16,10 +19,10 @@ import lombok.Setter;
 public class BaseResponseDto {
 	
 	@ApiModelProperty(position=1, notes="응답 상태(true/false)")
-	protected boolean isSuccess;
+	protected boolean isSuccess = true;
 
 	@ApiModelProperty(position=2, notes="응답 메시지 내용")
-	protected String message;
+	protected List<String> messages = Lists.newArrayList();
 
 	protected BaseResponseDto(final ResponseCode responseCode) {
 		setResponseCode(responseCode);
@@ -28,14 +31,23 @@ public class BaseResponseDto {
 	protected BaseResponseDto(final ResponseCode responseCode, final String message) {
 		setResponseCode(responseCode, message);
 	}
+	
+	protected BaseResponseDto(final ResponseCode responseCode, final List<String> messages) {
+		setResponseCode(responseCode, messages);
+	}
 
 	public void setResponseCode(final ResponseCode responseCode) {
 		this.isSuccess = responseCode.isSuccess();
-		this.message = responseCode.getMessage();
+		this.messages.add(responseCode.getMessage());
 	}
 
 	public void setResponseCode(final ResponseCode responseCode, final String message) {
 		this.isSuccess = responseCode.isSuccess();
-		this.message = message;
+		this.messages.add(message);
+	}
+	
+	public void setResponseCode(final ResponseCode responseCode, final List<String> messages) {
+		this.isSuccess = responseCode.isSuccess();
+		this.messages = messages;
 	}
 }

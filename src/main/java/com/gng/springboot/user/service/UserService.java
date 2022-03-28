@@ -36,7 +36,6 @@ public class UserService {
 	public String registerUser(UserRegisterDto userRegisterDto) {
 		UserEntity userEntity = UserEntity.builder()
 				.userId(userRegisterDto.getUserId())
-				.userPlainPwd(userRegisterDto.getUserPwd())
 				.userPwd(passwordEncryptionUtil.encrypt(userRegisterDto.getUserPwd()))
 				.userName(userRegisterDto.getUserName())
 				.userStatus(UserStatusTypes.USE.getStatus())

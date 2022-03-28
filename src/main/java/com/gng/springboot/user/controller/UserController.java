@@ -1,5 +1,7 @@
 package com.gng.springboot.user.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,13 +40,13 @@ public class UserController {
 	@ApiOperation(value = "사용자 등록")
 	@PostMapping("/register")
 	public ResponseDto<String> registerUser(
-			@RequestBody(required = true) UserRegisterDto UserRegisterDto
+			@Valid @RequestBody(required = true) UserRegisterDto UserRegisterDto
 			) {
 		log.info("Register user [{}]", UserRegisterDto);
 		
 		return new ResponseDto<>(ResponseCode.USER_REGISTER_SUCCESS, userService.registerUser(UserRegisterDto));
 	}
-	
+
 	/**
 	 * Login user
 	 * @param userLoginDto
@@ -53,7 +55,7 @@ public class UserController {
 	@ApiOperation(value = "사용자 로그인")
 	@PostMapping("/login")
 	public ResponseDto<UserLoginDto> loginUser(
-			@RequestBody(required = true) UserLoginDto userLoginDto
+			@Valid @RequestBody(required = true) UserLoginDto userLoginDto
 			) {
 		log.info("Login user [{}]", userLoginDto);
 		

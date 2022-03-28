@@ -1,11 +1,14 @@
 package com.gng.springboot.user.model;
 
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gng.springboot.commons.constant.Constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +30,11 @@ import lombok.ToString;
 @ToString(exclude = "userPwd")
 @Component
 public class UserLoginDto {
+	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_USER_ID_EMAIL)
 	private String userId;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@NotBlank(message = Constants.VALIDATE_USER_PW_BLANK)
 	private String userPwd;
 	
 	@Transient

@@ -1,16 +1,19 @@
 package com.gng.springboot.commons.exception.handler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Path.Node;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.model.ErrorResponseDto;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +39,7 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	/**
 	 * Business error
-	 * @param e
+	 * @param bex
 	 * @return
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -48,27 +52,27 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	/**
-	 * Validation error
-	 * @param bindingResult
+	 * Validation error(Repository)
+	 * @param cex
 	 * @return
 	 */
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<ErrorResponseDto> handleConstraintViolationException(ConstraintViolationException cex) {
-		ConstraintViolation<?> violation = cex.getConstraintViolations().iterator().next();
+		log.error("handleConstraintViolationException() : ", cex);
 		
-		// Get the last node of the violation
-		String field = null;
-		for (Node node : violation.getPropertyPath()) {
-			field = node.getName();
-		}
+		List<String> errorFields = Lists.newArrayList();
+		
+		cex.getConstraintViolations().forEach(constraintViolation -> {
+			constraintViolation.getPropertyPath().forEach(node -> errorFields.add(node.getName()));
+		});
 		
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new ErrorResponseDto(ResponseCode.BAD_REQUEST, extractErrorMessages(cex), field));
+				.body(new ErrorResponseDto(ResponseCode.BAD_REQUEST, extractErrorMessages(cex), errorFields));
 	}
 	
 	/**
 	 * Unexpected error
-	 * @param e
+	 * @param ex
 	 * @return
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -81,11 +85,29 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	/**
+	 * Argument not valid error
+	 */
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		log.error("handleMethodArgumentNotValidException() : ", ex);
+		
+		List<String> errorFields = Lists.newArrayList();
+		
+		ex.getBindingResult().getFieldErrors()
+				.forEach(fieldError -> errorFields.add(fieldError.getField()));
+		
+		return ResponseEntity.status(status)
+				.body(new ErrorResponseDto(ResponseCode.BAD_REQUEST, extractErrormessages(ex), errorFields));
+	}
+
+	/**
 	 * Bad request error
 	 */
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+		log.error("handleHttpMessageNotReadable() : ", ex);
+		
+		return ResponseEntity.status(status)
 				.body(new ErrorResponseDto(ResponseCode.BAD_REQUEST));
 	}
 	
@@ -93,16 +115,22 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	 * Unsupported request method error
 	 */
 	@Override
-	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		log.error("handleHttpRequestMethodNotSupported() : ", ex);
+		
+		return ResponseEntity.status(status)
 				.body(new ErrorResponseDto(ResponseCode.METHOD_NOT_ALLOWED));
 	}
 	
-	
-	private String extractErrorMessages(ConstraintViolationException e) {
-		return String.join("\n", e.getConstraintViolations().stream()
+	private List<String> extractErrorMessages(ConstraintViolationException cex) {
+		return cex.getConstraintViolations().stream()
 			.map(ConstraintViolation::getMessage)
-			.collect(Collectors.toList()));
+			.collect(Collectors.toList());
+	}
+	
+	private List<String> extractErrormessages(BindingResult bindingResult) {
+		return bindingResult.getFieldErrors().stream()
+				.map(DefaultMessageSourceResolvable::getDefaultMessage)
+				.collect(Collectors.toList());
 	}
 }
