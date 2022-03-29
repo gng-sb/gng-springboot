@@ -61,8 +61,8 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	@Column(name = "account_id")
 	private String accountId;
 	
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@ApiParam(value = "로그인 PW")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "account_pwd")
 	private String accountPwd;
 	

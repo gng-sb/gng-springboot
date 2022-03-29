@@ -12,6 +12,7 @@ import com.gng.springboot.commons.model.ResponseDto;
 import com.gng.springboot.email.service.EmailConfirmService;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +39,7 @@ public class EmailConfirmController {
 			)
 	@PostMapping("/email-confirm/{uuid}")
 	public ResponseEntity<ResponseDto<String>> confirmEmail(
-			@PathVariable(required = true) String uuid
+			@ApiParam(name = "uuid") @PathVariable(required = true) String uuid
 			) {
 		log.info("Confirm email [uuid={}]", uuid);
 		
