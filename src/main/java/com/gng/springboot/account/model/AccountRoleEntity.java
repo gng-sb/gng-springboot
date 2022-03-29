@@ -1,4 +1,4 @@
-package com.gng.springboot.user.model;
+package com.gng.springboot.account.model;
 
 import java.io.Serializable;
 
@@ -21,7 +21,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * gng_user_roles table entity
+ * gng_account_roles table entity
  * @author gchyoo
  *
  */
@@ -31,21 +31,21 @@ import lombok.ToString;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @ToString
-@Entity(name = "gng_user_roles")
-@Table(name = "gng_user_roles")
-public class UserRole extends BaseEntity implements Serializable {
+@Entity(name = "gng_account_roles")
+@Table(name = "gng_account_roles")
+public class AccountRoleEntity extends BaseEntity implements Serializable {
 	
 	private static final long serialVersionUID = 3092653173143502698L;
 
 	@Id
-	@ApiParam(value = "gng_user_roles 테이블 ID")
+	@ApiParam(value = "gng_account_roles 테이블 ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "gng_user_role_id")
-	private Long gngUserRoleId;
+	@Column(name = "gng_account_role_id")
+	private Long gngAccountRoleId;
 	
-	@ApiParam(value = "gng_users 테이블 ID")
-	@Column(name = "gng_user_id")
-	private Long gngUserId;
+	@ApiParam(value = "gng_accounts 테이블 ID")
+	@Column(name = "gng_account_id")
+	private Long gngAccountId;
 	
 	@ApiParam(value = "사용자 권한")
 	@Column(name = "role_type", columnDefinition = "VARCHAR")

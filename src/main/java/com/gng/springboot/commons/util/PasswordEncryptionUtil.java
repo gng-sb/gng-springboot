@@ -18,21 +18,21 @@ public class PasswordEncryptionUtil {
 	
 	/**
 	 * Encrypt password
-	 * @param userPwd
+	 * @param accountPwd
 	 * @return Encrypted password
 	 */
-	public String encrypt(String userPwd) {
-		return passwordEncoder.encode(userPwd);
+	public String encrypt(String accountPwd) {
+		return passwordEncoder.encode(accountPwd);
 	}
 	
 	/**
-	 * Check user password is valid
-	 * @param currentUserPwd Encrypted password in database
-	 * @param compareUserPwd password inserted by user(Not encrypted)
+	 * Check account password is valid
+	 * @param currentAccountPwd Encrypted password in database
+	 * @param compareAccountPwd password inserted by account(Not encrypted)
 	 * @return true/false (valid/not valid)
 	 */
-	public boolean isValidUserPwd(String currentUserPwd, String compareUserPwd) {
-		return passwordEncoder.matches(compareUserPwd, currentUserPwd);
+	public boolean isValidAccountPwd(String currentAccountPwd, String compareAccountPwd) {
+		return passwordEncoder.matches(compareAccountPwd, currentAccountPwd);
 	}
 	
 }

@@ -1,4 +1,4 @@
-package com.gng.springboot.user.model;
+package com.gng.springboot.account.model;
 
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Dto for login user
+ * Dto for login account
  * @author gchyoo
  *
  */
@@ -27,25 +27,25 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "userPwd")
+@ToString(exclude = "accountPwd")
 @Component
-public class UserLoginDto {
-	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_USER_ID_EMAIL)
-	private String userId;
+public class AccountLoginDto {
+	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
+	private String accountId;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@NotBlank(message = Constants.VALIDATE_USER_PW_BLANK)
-	private String userPwd;
+	@NotBlank(message = Constants.VALIDATE_ACCOUNT_PW_BLANK)
+	private String accountPwd;
 	
 	@Transient
 	private String jwt;
 	
-	private UserLoginDto(UserEntity userEntity, String jwt) {
-		BeanUtils.copyProperties(userEntity, this);
+	private AccountLoginDto(AccountEntity accountEntity, String jwt) {
+		BeanUtils.copyProperties(accountEntity, this);
 		this.jwt = jwt;
 	}
 	
-	public static UserLoginDto of(UserEntity userEntity, String jwt) {
-		return new UserLoginDto(userEntity, jwt);
+	public static AccountLoginDto of(AccountEntity accountEntity, String jwt) {
+		return new AccountLoginDto(accountEntity, jwt);
 	}
 }

@@ -1,4 +1,4 @@
-package com.gng.springboot.user.model;
+package com.gng.springboot.account.model;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * gng_users table entity
+ * gng_accounts table entity
  * @author gchyoo
  *
  */
@@ -43,41 +43,41 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-@ToString(exclude = "userPwd")
-@Entity(name = "gng_users")
-@Table(name = "gng_users")
-public class UserEntity extends BaseEntity implements UserDetails, Serializable {
+@ToString(exclude = "accountPwd")
+@Entity(name = "gng_accounts")
+@Table(name = "gng_accounts")
+public class AccountEntity extends BaseEntity implements UserDetails, Serializable {
 	
 	private static final long serialVersionUID = 739282898877248753L;
 
 	@Id
-	@ApiParam(value = "gng_users 테이블 ID")
+	@ApiParam(value = "gng_accounts 테이블 ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "gng_user_id")
-	private Long gngUserId;
+	@Column(name = "gng_account_id")
+	private Long gngAccountId;
 	
 	@ApiParam(value = "사용자 계정")
-	@Column(name = "user_id")
-	private String userId;
+	@Column(name = "account_id")
+	private String accountId;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@ApiParam(value = "사용자 비밀번호")
-	@Column(name = "user_pwd")
-	private String userPwd;
+	@Column(name = "account_pwd")
+	private String accountPwd;
 	
 	@ApiParam(value = "사용자 닉네임")
-	@Column(name = "user_name")
-	private String userName;
+	@Column(name = "account_name")
+	private String accountName;
 	
 	@ApiParam(value = "계정 활성화 여부")
-	@Column(name = "user_status", columnDefinition = "BIT", length=1)
-	private int userStatus;
+	@Column(name = "account_status", columnDefinition = "BIT", length=1)
+	private int accountStatus;
 
 	@Builder.Default // Default value to new HashSet
 	@ElementCollection(fetch = FetchType.EAGER) // Immediate loading
 	@CollectionTable(
-			name = "gng_user_roles", // Table name
-			joinColumns = @JoinColumn(name = "gng_user_id", referencedColumnName = "gng_user_id") // Join column name
+			name = "gng_account_roles", // Table name
+			joinColumns = @JoinColumn(name = "gng_account_id", referencedColumnName = "gng_account_id") // Join column name
 	)
 	@Column(name = "role_type") // RoleTypes column name
 	private Set<RoleTypes> roleTypeSet = new HashSet<>();
@@ -96,7 +96,7 @@ public class UserEntity extends BaseEntity implements UserDetails, Serializable 
 	
 	@Override
 	public String getUsername() {
-		return userId;
+		return accountId;
 	}
 
 	@Override
@@ -121,6 +121,6 @@ public class UserEntity extends BaseEntity implements UserDetails, Serializable 
 
 	@Override
 	public String getPassword() {
-		return userPwd;
+		return accountPwd;
 	}
 }

@@ -1,4 +1,4 @@
-package com.gng.springboot.user.model;
+package com.gng.springboot.account.model;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Dto for register user
+ * Dto for register account
  * @author gchyoo
  *
  */
@@ -26,16 +26,16 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "userPwd")
+@ToString(exclude = "accountPwd")
 @Component
-public class UserRegisterDto {
-	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_USER_ID_EMAIL)
-	private String userId;
+public class AccountRegisterDto {
+	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
+	private String accountId;
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@Pattern(regexp = Constants.REGEXP_PW, message = Constants.VALIDATE_USER_PW_PATTERN)
-	private String userPwd;
+	@Pattern(regexp = Constants.REGEXP_PW, message = Constants.VALIDATE_ACCOUNT_PW_PATTERN)
+	private String accountPwd;
 
-	@Size(min = 2, max = 20, message = Constants.VALIDATE_USER_NAME_SIZE)
-	private String userName;
+	@Size(min = 2, max = 20, message = Constants.VALIDATE_ACCOUNT_NAME_SIZE)
+	private String accountName;
 }
