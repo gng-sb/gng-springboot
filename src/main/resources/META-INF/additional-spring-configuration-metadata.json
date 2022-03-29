@@ -18,5 +18,20 @@
     "name": "jwt.valid-time",
     "type": "java.lang.String",
     "description": "JWT expire time(Seconds)"
+  },
+  {
+    "name": "mail.token.valid-time",
+    "type": "java.lang.String",
+    "description": "Confirmation mail valid time(Minutes)"
+  },
+  {
+    "name": "mail.host",
+    "type": "java.lang.String",
+    "description": "Server's ip address"
+  },
+  {
+    "name": "mail.port",
+    "type": "java.lang.String",
+    "description": "Server's port'"
   }
 ]}

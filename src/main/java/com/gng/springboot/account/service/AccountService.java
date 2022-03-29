@@ -1,16 +1,18 @@
 package com.gng.springboot.account.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.gng.springboot.commons.constant.Constants.RoleTypes;
-import com.gng.springboot.commons.constant.Constants.AccountStatusTypes;
 import com.gng.springboot.account.model.AccountEntity;
 import com.gng.springboot.account.model.AccountLoginDto;
 import com.gng.springboot.account.model.AccountRegisterDto;
 import com.gng.springboot.account.repository.AccountRepository;
+import com.gng.springboot.commons.constant.Constants.AccountStatusTypes;
+import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.util.PasswordEncryptionUtil;
+import com.gng.springboot.email.service.EmailConfirmService;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountService {
 	
 	private final AccountRepository accountRepository;
+	private final EmailConfirmService emailConfirmService;
 	private final PasswordEncryptionUtil passwordEncryptionUtil;
 	private final JwtTokenProvider jwtTokenProvider;
 	
@@ -33,7 +36,8 @@ public class AccountService {
 	 * @param accountRegisterDto
 	 * @return
 	 */
-	public String registerAccount(AccountRegisterDto accountRegisterDto) {
+	@Transactional(rollbackFor = Exception.class)
+	public String accountRegister(AccountRegisterDto accountRegisterDto) {
 		AccountEntity accountEntity = AccountEntity.builder()
 				.accountId(accountRegisterDto.getAccountId())
 				.accountPwd(passwordEncryptionUtil.encrypt(accountRegisterDto.getAccountPwd()))
@@ -50,9 +54,26 @@ public class AccountService {
 		});
 		
 		// Insert registeration data
-		String id = accountRepository.save(accountEntity).getAccountId();
+		String accountId = accountRepository.save(accountEntity).getAccountId();
 		
-		return id;
+		emailConfirmService.sendEmailConfirmToken(accountId);
+		
+		return accountId;
+	}
+	
+	/**
+	 * Confirm account
+	 * @param accountId
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public void confirmAccount(String accountId) {
+		// Retrieve account data
+		AccountEntity accountEntity = accountRepository.findByAccountId(accountId)
+				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_FOUND));
+
+		accountEntity.setAccountStatus(AccountStatusTypes.USE);
+
+		accountRepository.save(accountEntity);
 	}
 	
 	/**
@@ -60,7 +81,7 @@ public class AccountService {
 	 * @param accountLoginDto
 	 * @return
 	 */
-	public AccountLoginDto loginAccount(AccountLoginDto accountLoginDto) {
+	public AccountLoginDto accountLogin(AccountLoginDto accountLoginDto) {
 		// Get account data with accountId
 		AccountEntity accountEntity = accountRepository.findByAccountId(accountLoginDto.getAccountId())
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_EXIST));
@@ -69,7 +90,6 @@ public class AccountService {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_PASSWORD_FAILURE);
 		}
 		
-		// TODO: JWT create 무한루프 수정
 		return AccountLoginDto.of(accountEntity, jwtTokenProvider.createToken(accountEntity.getAccountId(), accountEntity.getRoleTypeSet()));
 	}
 }

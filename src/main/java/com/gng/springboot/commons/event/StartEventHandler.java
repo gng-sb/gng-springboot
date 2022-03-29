@@ -25,10 +25,7 @@ public class StartEventHandler implements ApplicationListener<ApplicationStarted
 	@Value("${application.version}")
 	private String applicationVersion;
 	
-	public StartEventHandler() {
-		
-	}
-
+	
 	@Override
 	public void onApplicationEvent(ApplicationStartedEvent event) {
 		log.info("=======================");

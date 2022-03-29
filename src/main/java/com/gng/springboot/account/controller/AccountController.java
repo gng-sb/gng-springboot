@@ -35,37 +35,33 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountController {
 	private final AccountService accountService;
 	
-	/**
-	 * Register account
-	 * @param AccountRegisterDto
-	 * @return
-	 */
-	@ApiOperation(value = "사용자 등록")
+	@ApiOperation(
+			value = "계정 등록",
+			notes = "사용자가 입력한 정보로 계정 등록과 인증 메일 전송을 수행한다."
+			)
 	@PostMapping("/register")
-	public ResponseEntity<ResponseDto<String>> registerAccount(
+	public ResponseEntity<ResponseDto<String>> accountRegister(
 			@Valid @RequestBody(required = true) AccountRegisterDto AccountRegisterDto
 			) {
 		log.info("Register account [{}]", AccountRegisterDto);
 		
-		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.registerAccount(AccountRegisterDto));
+		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.accountRegister(AccountRegisterDto));
 		
 		return ResponseEntity.status(responseDto.getHttpStatus())
 				.body(responseDto);
 	}
 
-	/**
-	 * Login account
-	 * @param accountLoginDto
-	 * @return
-	 */
-	@ApiOperation(value = "사용자 로그인")
+	@ApiOperation(
+			value = "계정 로그인",
+			notes = "사용자가 입력한 ID/PW로 로그인을 수행한다."
+			)
 	@PostMapping("/login")
-	public ResponseEntity<ResponseDto<AccountLoginDto>> loginAccount(
+	public ResponseEntity<ResponseDto<AccountLoginDto>> accountLogin(
 			@Valid @RequestBody(required = true) AccountLoginDto accountLoginDto
 			) {
 		log.info("Login account [{}]", accountLoginDto);
 
-		ResponseDto<AccountLoginDto> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_LOGIN_SUCCESS, accountService.loginAccount(accountLoginDto));
+		ResponseDto<AccountLoginDto> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_LOGIN_SUCCESS, accountService.accountLogin(accountLoginDto));
 
 		return ResponseEntity.status(responseDto.getHttpStatus())
 				.body(responseDto);

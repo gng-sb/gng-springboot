@@ -54,6 +54,16 @@ public class Constants {
 		
 		private int status;
 		private String description;
+		
+		public static AccountStatusTypes getAccountStatusType(int accountStatus) {
+			for(AccountStatusTypes accountStatusType : AccountStatusTypes.values()) {
+				if(accountStatus == accountStatusType.getStatus()) {
+					return accountStatusType;
+				}
+			}
+			
+			return null;
+		}
 	}
 	
 }

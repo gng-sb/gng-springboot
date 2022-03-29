@@ -22,6 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gng.springboot.commons.constant.Constants.AccountStatusTypes;
 import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.model.BaseEntity;
 
@@ -56,16 +57,16 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	@Column(name = "gng_account_id")
 	private Long gngAccountId;
 	
-	@ApiParam(value = "사용자 계정")
+	@ApiParam(value = "로그인 ID")
 	@Column(name = "account_id")
 	private String accountId;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@ApiParam(value = "사용자 비밀번호")
+	@ApiParam(value = "로그인 PW")
 	@Column(name = "account_pwd")
 	private String accountPwd;
 	
-	@ApiParam(value = "사용자 닉네임")
+	@ApiParam(value = "이름")
 	@Column(name = "account_name")
 	private String accountName;
 	
@@ -84,6 +85,14 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	
 	public void addRoleType(RoleTypes roleType) {
 		this.roleTypeSet.add(roleType);
+	}
+	
+	public AccountStatusTypes getAccountStatus() {
+		return AccountStatusTypes.getAccountStatusType(this.accountStatus);
+	}
+	
+	public void setAccountStatus(AccountStatusTypes accountStatusType) {
+		this.accountStatus = accountStatusType.getStatus();
 	}
 	
 	@Override

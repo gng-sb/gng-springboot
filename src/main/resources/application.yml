@@ -39,18 +39,27 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ENC(WZXR2Lp8NyQAoWcoypIzU4aB6MV+3UO1HeA7/dxMCAYAMLwXBUGOAw==)
-    password: ENC(Rj0dTm5Iloka34lEh2JAyye05cv/PnbBtH40OtQCkd+wGVFS4BM7vA==)
+    username: ENC(Ajt2vj7Oi+mZB6IC6uNAj4J6UvveTllKNXfb+9jAUYxW4zs1u61C3w==)
+    password: ENC(m67bWfsGzUfM+noexMZrlSQujV2HIM07aACeljS+QK85LpHZhHZg7A==)
     properties:
       mail:
         smtp:
-          starttls:
+          auth: true # 사용자 인증 시도
+          starttls: # StartTLS 활성화
             enable: true
             required: true
-          auth: true
+          ssl:
+            trust: smtp.gmail.com
+            protocols: TLSv1.2
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+
+mail:
+  host: ENC(WCwNUld0F1m6fCKejbhilowqDAhLYnyemsr0WdxVj/s=)
+  port: ${server.port}
+  token:
+    valid-time: 5
 
 # ==============================
 # Jasypt configurations
@@ -78,7 +87,13 @@ logging:
     '[sun.rmi]': warn
     '[org.apache]': warn
     '[org.hibernate.hql.internal]': warn
+    '[javax.activation]': warn
+    '[javax.mail]': warn
     '[javax.management.remote.rmi]': warn
+    '[jdk.event.security]': warn
+    '[com.sun.mail.smtp]': warn
+    '[32mjavax.activation]': warn
+    
   
   pattern:
     console: "[%d{yyyy-MM-dd HH:mm:ss}][%highlight(%-5level)][%magenta(%-12.12thread)][%green(%-37logger{36})][%cyan(%method:%line)] - %msg%n"
