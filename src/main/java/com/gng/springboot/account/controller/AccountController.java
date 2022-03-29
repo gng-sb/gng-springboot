@@ -2,6 +2,7 @@ package com.gng.springboot.account.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,12 +42,15 @@ public class AccountController {
 	 */
 	@ApiOperation(value = "사용자 등록")
 	@PostMapping("/register")
-	public ResponseDto<String> registerAccount(
+	public ResponseEntity<ResponseDto<String>> registerAccount(
 			@Valid @RequestBody(required = true) AccountRegisterDto AccountRegisterDto
 			) {
 		log.info("Register account [{}]", AccountRegisterDto);
 		
-		return new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.registerAccount(AccountRegisterDto));
+		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.registerAccount(AccountRegisterDto));
+		
+		return ResponseEntity.status(responseDto.getHttpStatus())
+				.body(responseDto);
 	}
 
 	/**
@@ -56,11 +60,14 @@ public class AccountController {
 	 */
 	@ApiOperation(value = "사용자 로그인")
 	@PostMapping("/login")
-	public ResponseDto<AccountLoginDto> loginAccount(
+	public ResponseEntity<ResponseDto<AccountLoginDto>> loginAccount(
 			@Valid @RequestBody(required = true) AccountLoginDto accountLoginDto
 			) {
 		log.info("Login account [{}]", accountLoginDto);
-		
-		return new ResponseDto<>(ResponseCode.ACCOUNT_LOGIN_SUCCESS, accountService.loginAccount(accountLoginDto));
+
+		ResponseDto<AccountLoginDto> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_LOGIN_SUCCESS, accountService.loginAccount(accountLoginDto));
+
+		return ResponseEntity.status(responseDto.getHttpStatus())
+				.body(responseDto);
 	}
 }

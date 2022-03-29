@@ -43,7 +43,6 @@ public class AccountService {
 		
 		// Add role type(ROLE_USER)
 		accountEntity.addRoleType(RoleTypes.ROLE_USER);
-		accountEntity.addRoleType(RoleTypes.ROLE_ADMIN);
 		
 		// Get account data with accountId and check conflict
 		accountRepository.findByAccountId(accountEntity.getAccountId()).ifPresent(account -> {
