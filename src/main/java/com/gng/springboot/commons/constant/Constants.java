@@ -12,7 +12,7 @@ import lombok.ToString;
 public class Constants {
 	
 	public static final String REGEXP_EMAIL = ".+[@].+[\\.].+";
-	public static final String REGEXP_PW = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$"; // (영문, 특수문자, 숫자 포함 8 ~ 20자)
+	public static final String REGEXP_PW = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$"; // (영문, 특수문자, 숫자 포함 8 ~ 20자)
 
 	public static final String VALIDATE_ACCOUNT_ID_BLANK = "사용자 계정을 입력해주세요.";
 	public static final String VALIDATE_ACCOUNT_ID_EMAIL = "올바른 형식의 이메일이 아닙니다.";
