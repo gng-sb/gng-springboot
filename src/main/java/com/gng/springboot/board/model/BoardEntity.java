@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -23,20 +24,25 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-@Entity
-@Table(name = "gng_board")
+@NoArgsConstructor
+@Entity(name = "gng_boards")
+@Table(name = "gng_boards")
 public class BoardEntity {
-	@Id
-	@ApiParam(value = "gng_board 테이블 ID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "gng_board_id")
-	private Long gngBoardId;
-	
-	@ApiParam(value = "게시글 제목")
-	@Column(name = "gng_board_name")
-	private String gngBoardName;
-	
-	@ApiParam(value = "게시글 내용")
-	@Column(name = "gng_board_data")
-	private String gngBoardData;
+   @Id
+   @ApiParam(value = "gng_board 테이블 ID")
+//   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "gng_board_id")
+   private Long gngBoardId;
+   
+//   @ApiParam(value = "로그인 ID")
+//   @Column(name = "account_id")
+//   private String accountId;
+   
+   @ApiParam(value = "게시글 제목")
+   @Column(name = "board_name")
+   private String boardName;
+   
+   @ApiParam(value = "게시글 내용")
+   @Column(name = "board_data", columnDefinition = "LONGTEXT")
+   private String boardData;
 }
