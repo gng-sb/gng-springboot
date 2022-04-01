@@ -21,9 +21,15 @@ public class BoardService {
 		return boardRepository.save(boardEntity);
 	}
 	
-//	public PracticeEntity createClub(PracticeEntity practiceEntity) {
-//		return practiceRepository.save(practiceEntity);
-//	}
+	public BoardEntity updateBoard(Long id, BoardEntity boardEntity) {
+		boardEntity.setGngBoardId(id);
+		return boardRepository.save(boardEntity);
+//		return null;
+	}
+	
+	public void deleteBoard(Long id) {
+		boardRepository.deleteById(id);
+	}
 }
 
 
