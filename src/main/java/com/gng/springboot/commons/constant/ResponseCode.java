@@ -34,6 +34,8 @@ public enum ResponseCode {
 	ACCOUNT_NOT_EXIST(false, HttpStatus.BAD_REQUEST, "사용자 아이디가 존재하지 않습니다."),
 	ACCOUNT_LOGIN_FAILURE(false, HttpStatus.BAD_REQUEST, "로그인에 실패하였습니다."),
 	ACCOUNT_LOGIN_PASSWORD_FAILURE(false, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+	ACCOUNT_LOGIN_NOT_AUTHORIZED(false, HttpStatus.UNAUTHORIZED, "이메일 인증이 완료되지 않았습니다. 이메일 인증 이후 로그인해주세요."),
+	ACCOUNT_LOGIN_BLOCKED(false, HttpStatus.FORBIDDEN, "사용할 수 없는 계정입니다."),
 	
 	EMAIL_TOKEN_NOT_FOUND(false, HttpStatus.NOT_FOUND, "유효한 토큰을 찾을 수 없습니다."),
 	EMAIL_TOKEN_SEND_FAILURE(false, HttpStatus.INTERNAL_SERVER_ERROR, "인증 메일 전송 도중 오류가 발생하였습니다.")

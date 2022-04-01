@@ -42,7 +42,7 @@ public class AccountService {
 				.accountId(accountRegisterDto.getAccountId())
 				.accountPwd(passwordEncryptionUtil.encrypt(accountRegisterDto.getAccountPwd()))
 				.accountName(accountRegisterDto.getAccountName())
-				.accountStatus(AccountStatusTypes.NOT_USE.getStatus())
+				.accountStatus(AccountStatusTypes.NOT_AUTHORIZED.getStatus())
 				.build();
 		
 		// Add role type(ROLE_USER)
@@ -86,8 +86,16 @@ public class AccountService {
 		AccountEntity accountEntity = accountRepository.findByAccountId(accountLoginDto.getAccountId())
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_EXIST));
 		
+		// Check password
 		if(!passwordEncryptionUtil.isValidAccountPwd(accountEntity.getAccountPwd(), accountLoginDto.getAccountPwd())) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_PASSWORD_FAILURE);
+		}
+		
+		// Check user status
+		if(accountEntity.getAccountStatus().equals(AccountStatusTypes.NOT_AUTHORIZED)) {
+			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_NOT_AUTHORIZED);
+		} else if(accountEntity.getAccountStatus().equals(AccountStatusTypes.BLOCKED)) {
+			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_BLOCKED);
 		}
 		
 		return AccountLoginDto.of(accountEntity, jwtTokenProvider.createToken(accountEntity.getAccountId(), accountEntity.getRoleTypeSet()));

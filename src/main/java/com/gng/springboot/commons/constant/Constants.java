@@ -49,7 +49,7 @@ public class Constants {
 	@AllArgsConstructor
 	public enum AccountStatusTypes {
 		USE(1, "활성화"),
-		NOT_USE(0, "비활성화"),
+		NOT_AUTHORIZED(0, "비활성화"),
 		BLOCKED(-1, "정지");
 		
 		private int status;
