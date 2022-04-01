@@ -30,13 +30,13 @@ import lombok.Setter;
 public class BoardEntity {
    @Id
    @ApiParam(value = "gng_board 테이블 ID")
-//   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "gng_board_id")
    private Long gngBoardId;
    
-//   @ApiParam(value = "로그인 ID")
-//   @Column(name = "account_id")
-//   private String accountId;
+   @ApiParam(value = "로그인 ID")
+   @Column(name = "user_id")
+   private String userId;
    
    @ApiParam(value = "게시글 제목")
    @Column(name = "board_name")
