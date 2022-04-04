@@ -40,7 +40,7 @@ public class EmailConfirmService {
 		EmailMessage emailMessage = EmailMessage.builder()
 				.to(accountId)
 				.subject("회원가입 이메일 인증[GNGSB]")
-				.text(String.format("http://%s:%s/gngsb/auth/email-confirm/%s", emailProperty.getHost(), emailProperty.getPort(), emailConfirmEntity.getUuid()))
+				.text(String.format("http://%s:%s/gng/auth/email-confirm/%s", emailProperty.getHost(), emailProperty.getPort(), emailConfirmEntity.getUuid()))
 				.build();
 		
 		sendEmail(emailMessage);

@@ -58,7 +58,8 @@ spring:
           writetimeout: 5000
 
 mail:
-  host: ENC(WCwNUld0F1m6fCKejbhilowqDAhLYnyemsr0WdxVj/s=)
+  host: localhost
+  # ENC(WCwNUld0F1m6fCKejbhilowqDAhLYnyemsr0WdxVj/s=)
   port: 3000
   token:
     valid-time: 5
