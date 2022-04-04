@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.gng.springboot.board.model.BoardEntity;
-import com.gng.springboot.board.reposigtory.BoardRepository;
+import com.gng.springboot.board.repository.BoardRepository;
 
 import lombok.RequiredArgsConstructor;
 

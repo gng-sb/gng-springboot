@@ -1,4 +1,4 @@
-package com.gng.springboot.board.reposigtory;
+package com.gng.springboot.board.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
