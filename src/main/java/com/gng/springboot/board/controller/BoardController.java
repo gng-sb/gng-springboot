@@ -32,13 +32,24 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardController {
 	private final BoardService boardService;
 	
+	// 페이징 개수 - 20개 단위
+	// 페이징 https://devlog-wjdrbs96.tistory.com/414
+	// selectBoard(Pageable pageable)							(BODY 없음) 페이지 최초 가져오기	: GET /board
+	// selectBoard(Pageable pageable)							(BODY 없음) 페이지 가져오기		: GET /board?page={num}
+	// selectArticle(@PathParam(required=true) id)				(BODY 없음) 게시글 가져오기		: GET /board/{id}
+	// createArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 생성			: POST /board
+	// updateArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 수정			: POST /board/{id} 
+	// deleteArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 삭제			: DELETE /board/{id}
+	
 	@PostMapping("/create")
 	public BoardEntity createBoard(@RequestBody BoardEntity boardEntity) {
 		return boardService.createBoard(boardEntity);	
 	}
 	
-	@GetMapping
-	public List<BoardEntity> searchBoard(@RequestBody BoardEntity boardEntity) {
+	@GetMapping("/{id}")
+	public List<BoardEntity> searchBoard(
+			
+			) {
 		return boardService.searchBoard();
 //		return null;
 	}
