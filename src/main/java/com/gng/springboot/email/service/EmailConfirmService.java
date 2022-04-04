@@ -40,8 +40,7 @@ public class EmailConfirmService {
 		EmailMessage emailMessage = EmailMessage.builder()
 				.to(accountId)
 				.subject("회원가입 이메일 인증[GNGSB]")
-				// TODO: React 이메일 인증 주소로 변경하여야 함
-				.text(String.format("http://%s:%s/account/email-confirm/%s", emailProperty.getHost(), emailProperty.getPort(), emailConfirmEntity.getUuid()))
+				.text(String.format("http://%s:%s/gngsb/auth/email-confirm/%s", emailProperty.getHost(), emailProperty.getPort(), emailConfirmEntity.getUuid()))
 				.build();
 		
 		sendEmail(emailMessage);

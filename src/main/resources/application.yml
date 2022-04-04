@@ -59,7 +59,7 @@ spring:
 
 mail:
   host: ENC(WCwNUld0F1m6fCKejbhilowqDAhLYnyemsr0WdxVj/s=)
-  port: ${server.port}
+  port: 3000
   token:
     valid-time: 5
 
