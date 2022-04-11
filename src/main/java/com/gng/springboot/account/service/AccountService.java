@@ -1,5 +1,7 @@
 package com.gng.springboot.account.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +51,23 @@ public class AccountService {
 		accountEntity.addRoleType(RoleTypes.ROLE_USER);
 		
 		// Get account data with accountId and check conflict
-		accountRepository.findByAccountId(accountEntity.getAccountId()).ifPresent(account -> {
-			throw new BusinessException(ResponseCode.ACCOUNT_ID_CONFLICT);
+		Optional<AccountEntity> prevAccountEntity = accountRepository.findByAccountId(accountEntity.getAccountId());
+		
+		// Account conflict exceptions
+		prevAccountEntity.ifPresent(account -> {
+			if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
+				// Do not send confirmation mail if account is already authorized
+				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
+			} else if(!passwordEncryptionUtil.isValidAccountPwd(accountEntity.getAccountPwd(), accountRegisterDto.getAccountPwd())) {
+				// Do not send confirmation mail if account is not authorized and password is different
+				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_PASSWORD_FAILURE);
+			}
 		});
 		
-		// Insert registeration data
-		accountRepository.save(accountEntity).getAccountId();
+		// Insert registration data if not exist
+		if(!prevAccountEntity.isPresent()) {
+			accountRepository.save(accountEntity).getAccountId();
+		}
 		
 		// Send confirmation mail
 		emailConfirmService.sendEmailConfirmToken(accountEntity.getAccountId());
@@ -71,9 +84,11 @@ public class AccountService {
 		// Retrieve account data
 		AccountEntity accountEntity = accountRepository.findByAccountId(accountId)
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_FOUND));
-
+		
+		// Set account status to 'USE'
 		accountEntity.setAccountStatus(AccountStatusTypes.USE);
-
+		
+		// Update account status
 		accountRepository.save(accountEntity);
 	}
 	

@@ -47,8 +47,7 @@ import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropert
 @TestPropertySource(locations = "classpath:application.yml")
 @Import(value = {EnableEncryptablePropertiesConfiguration.class})
 @ExtendWith(SpringExtension.class)
-@MockBean(classes = {JwtTokenProvider.class, 
-		JwtService.class, AccountRepository.class})
+@MockBean(classes = {JwtTokenProvider.class, JwtService.class, AccountRepository.class})
 @AutoConfigureMockMvc
 @WebMvcTest(AccountController.class) // 테스트할 클래스명
 @DisplayName("AccountController 테스트")
@@ -77,7 +76,7 @@ public class AccountControllerTest {
 		@Test
 		@DisplayName("성공")
 		public void success() throws Exception {
-			// given
+			// Given
 			final AccountRegisterDto accountRegisterDto = AccountRegisterDto.builder()
 					.accountId("testId@test.com")
 					.accountName("testName")
@@ -87,10 +86,10 @@ public class AccountControllerTest {
 			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
 					.willReturn(accountRegisterDto.getAccountId());
 			
-			// when
+			// When
 			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountRegisterDto)));
 			
-			// then
+			// Then
 			resultActions
 					.andDo(MockMvcResultHandlers.print()) // 응답 출력
 					.andExpect(MockMvcResultMatchers.status().isCreated())
@@ -102,7 +101,7 @@ public class AccountControllerTest {
 		@Test
 		@DisplayName("실패")
 		public void fail() throws Exception {
-			// given
+			// Given
 			final AccountRegisterDto accountRegisterDto = AccountRegisterDto.builder()
 					.accountId("")
 					.accountName("")
@@ -112,10 +111,10 @@ public class AccountControllerTest {
 			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
 					.willThrow(BusinessException.class);
 			
-			// when
+			// When
 			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountRegisterDto)));
 			
-			// then
+			// Then
 			resultActions
 					.andDo(MockMvcResultHandlers.print()) // 응답 출력
 					.andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -139,7 +138,7 @@ public class AccountControllerTest {
 		@Test
 		@DisplayName("성공")
 		public void success() throws Exception {
-			// given
+			// Given
 			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
 					.accountId("testId@test.com")
 					.accountPwd("testPwd1!")
@@ -149,10 +148,10 @@ public class AccountControllerTest {
 			BDDMockito.given(accountService.accountLogin(accountLoginDto))
 					.willReturn(accountLoginDto);
 			
-			// when
+			// When
 			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountLoginDto)));
 			
-			// then
+			// Then
 			resultActions
 					.andDo(MockMvcResultHandlers.print())
 					.andExpect(MockMvcResultMatchers.status().isOk())
@@ -164,7 +163,7 @@ public class AccountControllerTest {
 		@Test
 		@DisplayName("실패")
 		public void fail() throws Exception {
-			// given
+			// Given
 			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
 					.accountId("")
 					.accountPwd("")
@@ -173,10 +172,10 @@ public class AccountControllerTest {
 			BDDMockito.given(accountService.accountLogin(accountLoginDto))
 					.willThrow(BusinessException.class);
 			
-			// when
+			// When
 			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountLoginDto)));
 			
-			// then
+			// Then
 			resultActions
 					.andDo(MockMvcResultHandlers.print())
 					.andExpect(MockMvcResultMatchers.status().isBadRequest())
