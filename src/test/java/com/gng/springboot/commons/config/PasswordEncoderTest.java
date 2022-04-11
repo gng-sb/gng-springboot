@@ -30,7 +30,7 @@ public class PasswordEncoderTest {
 	private PasswordEncoder passwordEncoder;
 	
 	@Test
-	@DisplayName("비밀번호 암호화 테스트")
+	@DisplayName("PasswordEncoder 비밀번호 암호화 테스트")
 	public void encryptPassword() {
 		String plainPassword = "passwordTest1234!";
 		
