@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -46,10 +45,9 @@ import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropert
  */
 @TestPropertySource(locations = "classpath:application.yml")
 @Import(value = {EnableEncryptablePropertiesConfiguration.class})
-@ExtendWith(SpringExtension.class)
+@WebMvcTest(AccountController.class) // 테스트할 컨트롤러 클래스명
 @MockBean(classes = {JwtTokenProvider.class, JwtService.class, AccountRepository.class})
-@AutoConfigureMockMvc
-@WebMvcTest(AccountController.class) // 테스트할 클래스명
+@ExtendWith(SpringExtension.class)
 @DisplayName("AccountController 테스트")
 public class AccountControllerTest {
 	private MockMvc mockMvc;

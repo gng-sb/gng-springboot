@@ -25,17 +25,24 @@ import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropert
 @Import(EnableEncryptablePropertiesConfiguration.class) // 필요한 클래스 Import
 @ExtendWith(SpringExtension.class) // JUnit 5
 @SpringBootTest // @SpringBootApplication 클래스에서 context를 찾음
+@DisplayName("PasswordEncoder 비밀번호 암호화 테스트")
 public class PasswordEncoderTest {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	@Test
-	@DisplayName("PasswordEncoder 비밀번호 암호화 테스트")
-	public void encryptPassword() {
+	@DisplayName("성공")
+	public void success() {
+		// Given
 		String plainPassword = "passwordTest1234!";
 		
+		// When
 		String encryptedPassword = passwordEncoder.encode(plainPassword);
 		
+		System.out.println(plainPassword);
+		System.out.println(encryptedPassword);
+		
+		// Then
 		assertAll(
 				() -> assertNotEquals(plainPassword, encryptedPassword),
 				() -> assertTrue(passwordEncoder.matches(plainPassword, encryptedPassword))
