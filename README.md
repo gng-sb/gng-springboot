@@ -8,6 +8,7 @@
 - Spring data JPA / hibernate
 - Gradle
 - MySQL
+- JWT
 ```
 
 ---
@@ -29,7 +30,6 @@ https://themeforest.net/item/emilus-react-admin-template/28400277
 
 > # TODO list
 ```
-- JWT
 - Swagger
 - Apache Kafka/Redis
 - Elasticsearch
