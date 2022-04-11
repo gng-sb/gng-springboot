@@ -1,6 +1,7 @@
 package com.gng.springboot.board.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,28 +41,30 @@ public class BoardController {
 	// createArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 생성			: POST /board
 	// updateArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 수정			: POST /board/{id} 
 	// deleteArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 삭제			: DELETE /board/{id}
+
+	@GetMapping("")
+	public List<BoardEntity> searchAllBoard() {
+		return boardService.searchAllBoard();
+	}
 	
-	@PostMapping("/create")
+	@GetMapping("/{id}")
+	public Optional<BoardEntity> searchBoard(@PathVariable Long id) {
+		return boardService.searchBoard(id);
+	}
+	
+	@PostMapping("")
 	public BoardEntity createBoard(@RequestBody BoardEntity boardEntity) {
 		return boardService.createBoard(boardEntity);	
 	}
 	
-	@GetMapping("/{id}")
-	public List<BoardEntity> searchBoard(
-			
-			) {
-		return boardService.searchBoard();
-//		return null;
-	}
-	
-	@PostMapping("/update/{id}")
+	@PostMapping("/{id}")
 	public BoardEntity updateBoard(
 			@PathVariable Long id, 
 			@RequestBody BoardEntity boardEntity) {
 		return boardService.updateBoard(id, boardEntity);
 	}
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public void deleteBoard(@PathVariable Long id) {
 		boardService.deleteBoard(id);
 	}

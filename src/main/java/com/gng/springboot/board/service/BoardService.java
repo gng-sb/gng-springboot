@@ -1,6 +1,7 @@
 package com.gng.springboot.board.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,12 @@ public class BoardService {
 		return boardRepository.save(boardEntity);
 	}
 	
-	public List<BoardEntity> searchBoard() {
+	public List<BoardEntity> searchAllBoard() {
 		return boardRepository.findAll();
+	}
+	
+	public Optional<BoardEntity> searchBoard(Long id) {
+		return boardRepository.findById(id);
 	}
 	
 	public BoardEntity updateBoard(Long id, BoardEntity boardEntity) {
