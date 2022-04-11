@@ -9,6 +9,6 @@ import com.gng.springboot.email.model.EmailConfirmEntity;
 
 public interface EmailConfirmRepository extends JpaRepository<EmailConfirmEntity, Long> {
 
+	public Optional<EmailConfirmEntity> findByUuid(String uuid);
 	public Optional<EmailConfirmEntity> findByUuidAndExpiredAtAfterAndExpired(String uuid, LocalDateTime now, boolean b);
-
 }

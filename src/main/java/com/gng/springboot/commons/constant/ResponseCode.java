@@ -31,7 +31,7 @@ public enum ResponseCode {
 
 	ACCOUNT_REGISTER_ID_CONFLICT(false, HttpStatus.CONFLICT, "동일한 아이디를 가진 사용자가 존재합니다."),
 	ACCOUNT_REGISTER_PASSWORD_FAILURE(false, HttpStatus.BAD_REQUEST, "인증되지 않은 아이디가 존재하지만, 입력된 비밀번호가 기존 비밀번호와 일치하지 않습니다."),
-	
+
 	ACCOUNT_NOT_FOUND(false, HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다"),
 	ACCOUNT_NOT_EXIST(false, HttpStatus.BAD_REQUEST, "사용자 아이디가 존재하지 않습니다."),
 	
@@ -40,7 +40,8 @@ public enum ResponseCode {
 	ACCOUNT_LOGIN_NOT_AUTHORIZED(false, HttpStatus.UNAUTHORIZED, "이메일 인증이 완료되지 않았습니다. 이메일 인증 이후 로그인해주세요."),
 	ACCOUNT_LOGIN_BLOCKED(false, HttpStatus.FORBIDDEN, "사용할 수 없는 계정입니다."),
 	
-	EMAIL_TOKEN_NOT_FOUND(false, HttpStatus.NOT_FOUND, "이메일 인증에 실패하였습니다."),
+	EMAIL_TOKEN_NOT_FOUND(false, HttpStatus.NOT_FOUND, "이메일 인증에 실패하였습니다. 인증 정보가 존재하지 않습니다."),
+	EMAIL_TOKEN_NOT_FOUND_RESEND(false, HttpStatus.NOT_FOUND, "이메일 인증에 실패하였습니다. 인증 메일을 다시 전송하였으니 이메일 인증을 다시 시도해주세요."),
 	EMAIL_TOKEN_SEND_FAILURE(false, HttpStatus.INTERNAL_SERVER_ERROR, "인증 메일 전송 도중 오류가 발생하였습니다.")
 	;
 	

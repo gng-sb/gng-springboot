@@ -13,6 +13,7 @@ import com.gng.springboot.commons.constant.Constants.AccountStatusTypes;
 import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
+import com.gng.springboot.commons.exception.custom.NoRollbackBusinessException;
 import com.gng.springboot.commons.util.PasswordEncryptionUtil;
 import com.gng.springboot.email.service.EmailConfirmService;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
@@ -36,9 +37,9 @@ public class AccountService {
 	/**
 	 * Register account
 	 * @param accountRegisterDto
-	 * @return
+	 * @return accountId
 	 */
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
 	public String accountRegister(AccountRegisterDto accountRegisterDto) {
 		AccountEntity accountEntity = AccountEntity.builder()
 				.accountId(accountRegisterDto.getAccountId())
@@ -51,10 +52,10 @@ public class AccountService {
 		accountEntity.addRoleType(RoleTypes.ROLE_USER);
 		
 		// Get account data with accountId and check conflict
-		Optional<AccountEntity> prevAccountEntity = accountRepository.findByAccountId(accountEntity.getAccountId());
+		Optional<AccountEntity> prevAccountEntityOptional = accountRepository.findByAccountId(accountEntity.getAccountId());
 		
 		// Account conflict exceptions
-		prevAccountEntity.ifPresent(account -> {
+		prevAccountEntityOptional.ifPresent(account -> {
 			if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
 				// Do not send confirmation mail if account is already authorized
 				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
@@ -65,7 +66,7 @@ public class AccountService {
 		});
 		
 		// Insert registration data if not exist
-		if(!prevAccountEntity.isPresent()) {
+		if(!prevAccountEntityOptional.isPresent()) {
 			accountRepository.save(accountEntity).getAccountId();
 		}
 		
@@ -79,7 +80,7 @@ public class AccountService {
 	 * Confirm account
 	 * @param accountId
 	 */
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
 	public void confirmAccount(String accountId) {
 		// Retrieve account data
 		AccountEntity accountEntity = accountRepository.findByAccountId(accountId)
@@ -95,7 +96,7 @@ public class AccountService {
 	/**
 	 * Login account with account id/password
 	 * @param accountLoginDto
-	 * @return
+	 * @return accountLoginDto with JWT
 	 */
 	public AccountLoginDto accountLogin(AccountLoginDto accountLoginDto) {
 		// Get account data with accountId
@@ -109,6 +110,9 @@ public class AccountService {
 		
 		// Check user status
 		if(accountEntity.getAccountStatus().equals(AccountStatusTypes.NOT_AUTHORIZED)) {
+			// Re-send confirmation mail if unauthorized account trying to login
+			emailConfirmService.sendEmailConfirmToken(accountEntity.getAccountId());
+			
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_NOT_AUTHORIZED);
 		} else if(accountEntity.getAccountStatus().equals(AccountStatusTypes.BLOCKED)) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_BLOCKED);

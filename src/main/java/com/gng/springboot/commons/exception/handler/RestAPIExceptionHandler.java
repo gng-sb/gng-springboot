@@ -15,13 +15,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
+import com.gng.springboot.commons.exception.custom.NoRollbackBusinessException;
 import com.gng.springboot.commons.model.ErrorResponseDto;
 import com.google.common.collect.Lists;
 
@@ -42,13 +42,25 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param bex
 	 * @return
 	 */
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(value = {BusinessException.class})
 	protected ResponseEntity<ErrorResponseDto> handleBusinessException(BusinessException bex) {
 		log.error("handleBusinessException() : ", bex);
 		
 		return ResponseEntity.status(bex.getResponseCode().getHttpStatus())
 				.body(new ErrorResponseDto(bex.getResponseCode()));
+	}
+	
+	/**
+	 * Business error with no rollback
+	 * @param bex
+	 * @return
+	 */
+	@ExceptionHandler(value = {NoRollbackBusinessException.class})
+	protected ResponseEntity<ErrorResponseDto> handleNoRollbackBusinessException(NoRollbackBusinessException nrbex) {
+		log.error("handleNoRollbackBusinessException.class() : ", nrbex);
+		
+		return ResponseEntity.status(nrbex.getResponseCode().getHttpStatus())
+				.body(new ErrorResponseDto(nrbex.getResponseCode()));
 	}
 	
 	/**
@@ -75,7 +87,6 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param ex
 	 * @return
 	 */
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(value = {Exception.class})
 	protected ResponseEntity<ErrorResponseDto> handleUnexpectedException(Exception ex) {
 		log.error("handleUnexpectedException() : ", ex);
