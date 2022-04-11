@@ -18,6 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -25,11 +26,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.gng.springboot.account.controller.AccountController;
+import com.gng.springboot.account.model.AccountLoginDto;
 import com.gng.springboot.account.model.AccountRegisterDto;
 import com.gng.springboot.account.repository.AccountRepository;
 import com.gng.springboot.account.service.AccountService;
 import com.gng.springboot.commons.constant.Constants;
 import com.gng.springboot.commons.constant.ResponseCode;
+import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.handler.RestAPIExceptionHandler;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.jwt.service.JwtService;
@@ -64,8 +67,13 @@ public class AccountControllerTest {
 	}
 	
 	@Nested
-	@DisplayName("Accountcontroller 계정 등록 테스트")
+	@DisplayName("AccountController 계정 등록 테스트")
 	public class AccountRegisterTest {
+		private MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/account/register")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.characterEncoding(StandardCharsets.UTF_8.toString());
+		
 		@Test
 		@DisplayName("성공")
 		public void success() throws Exception {
@@ -77,20 +85,10 @@ public class AccountControllerTest {
 					.build();
 					
 			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
-					.willReturn(
-							"testId@test.com"
-					);
+					.willReturn(accountRegisterDto.getAccountId());
 			
 			// when
-			final ResultActions resultActions = mockMvc.perform(
-					MockMvcRequestBuilders.post("/account/register")
-							.contentType(MediaType.APPLICATION_JSON)
-							.accept(MediaType.APPLICATION_JSON)
-							.characterEncoding(StandardCharsets.UTF_8.toString())
-							.content(
-									new Gson().toJson(accountRegisterDto)
-							)
-					);
+			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountRegisterDto)));
 			
 			// then
 			resultActions
@@ -112,20 +110,10 @@ public class AccountControllerTest {
 					.build();
 					
 			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
-					.willReturn(
-							"testId@test.com"
-					);
+					.willThrow(BusinessException.class);
 			
 			// when
-			final ResultActions resultActions = mockMvc.perform(
-					MockMvcRequestBuilders.post("/account/register")
-							.contentType(MediaType.APPLICATION_JSON)
-							.accept(MediaType.APPLICATION_JSON)
-							.characterEncoding(StandardCharsets.UTF_8.toString())
-							.content(
-									new Gson().toJson(accountRegisterDto)
-							)
-					);
+			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountRegisterDto)));
 			
 			// then
 			resultActions
@@ -139,16 +127,64 @@ public class AccountControllerTest {
 		}
 	}
 	
-	
-//	@Test
-//	@DisplayName("AccountLogin 계정 로그인 테스트")
-//	public void accountLoginTest() {
-//		final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
-//				.accountId("testId@test.com")
-//				.accountPwd("testPwd1!")
-//				.build();
-//		
-//		
-//	}
-	
+
+	@Nested
+	@DisplayName("AccountController 계정 로그인 테스트")
+	public class AccountLoginTest {
+		private MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/account/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.characterEncoding(StandardCharsets.UTF_8.toString());
+		
+		@Test
+		@DisplayName("성공")
+		public void success() throws Exception {
+			// given
+			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
+					.accountId("testId@test.com")
+					.accountPwd("testPwd1!")
+					.build();
+			
+					
+			BDDMockito.given(accountService.accountLogin(accountLoginDto))
+					.willReturn(accountLoginDto);
+			
+			// when
+			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountLoginDto)));
+			
+			// then
+			resultActions
+					.andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().isOk())
+					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.ACCOUNT_LOGIN_SUCCESS.getHttpStatus().name()))
+					.andExpect(MockMvcResultMatchers.jsonPath("$.messages[0]").value(ResponseCode.ACCOUNT_LOGIN_SUCCESS.getMessage()))
+					.andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+		}
+
+		@Test
+		@DisplayName("실패")
+		public void fail() throws Exception {
+			// given
+			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
+					.accountId("")
+					.accountPwd("")
+					.build();
+					
+			BDDMockito.given(accountService.accountLogin(accountLoginDto))
+					.willThrow(BusinessException.class);
+			
+			// when
+			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountLoginDto)));
+			
+			// then
+			resultActions
+					.andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().isBadRequest())
+					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.BAD_REQUEST.getHttpStatus().name()))
+					.andExpect(MockMvcResultMatchers.jsonPath("$.messages").value(Matchers.containsInAnyOrder(
+							Constants.VALIDATE_ACCOUNT_ID_EMAIL, Constants.VALIDATE_ACCOUNT_PW_BLANK
+							)))
+					.andExpect(MockMvcResultMatchers.jsonPath("$.success").value(false));
+		}
+	}
 }
