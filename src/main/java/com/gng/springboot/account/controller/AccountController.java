@@ -41,11 +41,11 @@ public class AccountController {
 			)
 	@PostMapping("/register")
 	public ResponseEntity<ResponseDto<String>> accountRegister(
-			@Valid @RequestBody(required = true) AccountRegisterDto AccountRegisterDto
+			@Valid @RequestBody(required = true) AccountRegisterDto accountRegisterDto
 			) {
-		log.info("Register account [{}]", AccountRegisterDto);
+		log.info("Register account [{}]", accountRegisterDto);
 		
-		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.accountRegister(AccountRegisterDto));
+		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.accountRegister(accountRegisterDto));
 		
 		return ResponseEntity.status(responseDto.getHttpStatus())
 				.body(responseDto);

@@ -54,11 +54,12 @@ public class AccountService {
 		});
 		
 		// Insert registeration data
-		String accountId = accountRepository.save(accountEntity).getAccountId();
+		accountRepository.save(accountEntity).getAccountId();
 		
-		emailConfirmService.sendEmailConfirmToken(accountId);
+		// Send confirmation mail
+		emailConfirmService.sendEmailConfirmToken(accountEntity.getAccountId());
 		
-		return accountId;
+		return accountEntity.getAccountId();
 	}
 	
 	/**
