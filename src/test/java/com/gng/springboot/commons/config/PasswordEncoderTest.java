@@ -7,12 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration;
 
@@ -22,13 +21,12 @@ import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropert
  *
  */
 @TestPropertySource(locations = "classpath:application.yml") // 설정 파일 import
-@Import(EnableEncryptablePropertiesConfiguration.class) // 필요한 클래스 Import
-@ExtendWith(SpringExtension.class) // JUnit 5
-@SpringBootTest // @SpringBootApplication 클래스에서 context를 찾음
+@Import(value = {EnableEncryptablePropertiesConfiguration.class}) // 필요한 클래스 Import
+@ExtendWith(MockitoExtension.class) // Mockito
 @DisplayName("PasswordEncoder 비밀번호 암호화 테스트")
 public class PasswordEncoderTest {
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	@Spy
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Test
 	@DisplayName("성공")
@@ -38,9 +36,6 @@ public class PasswordEncoderTest {
 		
 		// When
 		String encryptedPassword = passwordEncoder.encode(plainPassword);
-		
-		System.out.println(plainPassword);
-		System.out.println(encryptedPassword);
 		
 		// Then
 		assertAll(

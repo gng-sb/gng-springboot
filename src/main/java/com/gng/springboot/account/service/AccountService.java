@@ -2,6 +2,7 @@ package com.gng.springboot.account.service;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +15,6 @@ import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.custom.NoRollbackBusinessException;
-import com.gng.springboot.commons.util.PasswordEncryptionUtil;
 import com.gng.springboot.email.service.EmailConfirmService;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 
@@ -31,7 +31,7 @@ public class AccountService {
 	
 	private final AccountRepository accountRepository;
 	private final EmailConfirmService emailConfirmService;
-	private final PasswordEncryptionUtil passwordEncryptionUtil;
+	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	
 	/**
@@ -43,7 +43,7 @@ public class AccountService {
 	public String accountRegister(AccountRegisterDto accountRegisterDto) {
 		AccountEntity accountEntity = AccountEntity.builder()
 				.accountId(accountRegisterDto.getAccountId())
-				.accountPwd(passwordEncryptionUtil.encrypt(accountRegisterDto.getAccountPwd()))
+				.accountPwd(passwordEncoder.encode(accountRegisterDto.getAccountPwd()))
 				.accountName(accountRegisterDto.getAccountName())
 				.accountStatus(AccountStatusTypes.NOT_AUTHORIZED.getStatus())
 				.build();
@@ -59,7 +59,7 @@ public class AccountService {
 			if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
 				// Do not send confirmation mail if account is already authorized
 				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
-			} else if(!passwordEncryptionUtil.isValidAccountPwd(accountEntity.getAccountPwd(), accountRegisterDto.getAccountPwd())) {
+			} else if(!passwordEncoder.matches(accountEntity.getAccountPwd(), accountRegisterDto.getAccountPwd())) {
 				// Do not send confirmation mail if account is not authorized and password is different
 				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_PASSWORD_FAILURE);
 			}
@@ -104,7 +104,7 @@ public class AccountService {
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_EXIST));
 		
 		// Check password
-		if(!passwordEncryptionUtil.isValidAccountPwd(accountEntity.getAccountPwd(), accountLoginDto.getAccountPwd())) {
+		if(!passwordEncoder.matches(accountEntity.getAccountPwd(), accountLoginDto.getAccountPwd())) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_PASSWORD_FAILURE);
 		}
 		
