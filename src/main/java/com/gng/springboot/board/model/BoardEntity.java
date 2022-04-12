@@ -7,6 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +49,10 @@ public class BoardEntity {
    @ApiParam(value = "게시글 내용")
    @Column(name = "board_data", columnDefinition = "LONGTEXT")
    private String boardData;
+   
+   @ApiParam(value = "생성 일자")
+   @Column(name = "created_at", columnDefinition = "DATETIME")
+   @DateTimeFormat(pattern = "yy-dd-MM")
+   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-dd-MM")
+   private String createTime;
 }

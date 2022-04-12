@@ -42,6 +42,7 @@ public class BoardController {
 	// updateArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 수정			: POST /board/{id} 
 	// deleteArticle(@RequestBody(required=true) boardEntity)	(BODY 있음) 게시글 삭제			: DELETE /board/{id}
 
+	
 	@GetMapping("")
 	public List<BoardEntity> searchAllBoard() {
 		return boardService.searchAllBoard();
