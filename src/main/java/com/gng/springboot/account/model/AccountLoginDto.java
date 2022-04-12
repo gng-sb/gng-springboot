@@ -40,6 +40,9 @@ public class AccountLoginDto {
 	@NotBlank(message = Constants.VALIDATE_ACCOUNT_PW_BLANK)
 	private String accountPwd;
 	
+	@ApiParam(value = "이름")
+	private String accountName;
+	
 	@Transient
 	private String jwt;
 	
