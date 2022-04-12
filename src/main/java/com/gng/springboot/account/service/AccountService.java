@@ -59,7 +59,7 @@ public class AccountService {
 			if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
 				// Do not send confirmation mail if account is already authorized
 				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
-			} else if(!passwordEncoder.matches(accountEntity.getAccountPwd(), accountRegisterDto.getAccountPwd())) {
+			} else if(!passwordEncoder.matches(accountRegisterDto.getAccountPwd(), account.getAccountPwd())) {
 				// Do not send confirmation mail if account is not authorized and password is different
 				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_PASSWORD_FAILURE);
 			}
@@ -104,7 +104,7 @@ public class AccountService {
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_EXIST));
 		
 		// Check password
-		if(!passwordEncoder.matches(accountEntity.getAccountPwd(), accountLoginDto.getAccountPwd())) {
+		if(!passwordEncoder.matches(accountLoginDto.getAccountPwd(), accountEntity.getAccountPwd())) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_PASSWORD_FAILURE);
 		}
 		
