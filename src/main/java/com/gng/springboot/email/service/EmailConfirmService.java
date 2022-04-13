@@ -31,15 +31,15 @@ public class EmailConfirmService {
 	
 	/**
 	 * Send email confirmation token
-	 * @param accountId
+	 * @param id
 	 */
 	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
-	public void sendEmailConfirmToken(String accountId) {
-		EmailConfirmEntity emailConfirmEntity = EmailConfirmEntity.createEmailConfirmToken(accountId, emailProperty.getToken().getValidTime());
+	public void sendEmailConfirmToken(String id) {
+		EmailConfirmEntity emailConfirmEntity = EmailConfirmEntity.createEmailConfirmToken(id, emailProperty.getToken().getValidTime());
 		emailConfirmEntity = emailConfirmRepository.save(emailConfirmEntity);
 		
 		EmailMessage emailMessage = EmailMessage.builder()
-				.to(accountId)
+				.to(id)
 				.subject("회원가입 이메일 인증[GNGSB]")
 				.text(String.format("http://%s:%s/gng/auth/email-confirm/%s", emailProperty.getHost(), emailProperty.getPort(), emailConfirmEntity.getUuid()))
 				.build();
@@ -69,7 +69,7 @@ public class EmailConfirmService {
 
 	/**
 	 * Confirm email
-	 * @param accountId
+	 * @param uuid
 	 */
 	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
 	public String confirmEmail(String uuid) {
@@ -82,7 +82,7 @@ public class EmailConfirmService {
 		// Update token, account
 		emailConfirmRepository.save(emailConfirmEntity);
 		
-		return emailConfirmEntity.getAccountId();
+		return emailConfirmEntity.getId();
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class EmailConfirmService {
 			
 			if(emailConfirmEntityExpiredOptional.isPresent()) {
 				// Re-send confirmation mail if valid uuid is given
-				sendEmailConfirmToken(emailConfirmEntityExpiredOptional.get().getAccountId());
+				sendEmailConfirmToken(emailConfirmEntityExpiredOptional.get().getId());
 				
 				throw new NoRollbackBusinessException(ResponseCode.EMAIL_TOKEN_NOT_FOUND_RESEND);
 			} else {

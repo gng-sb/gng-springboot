@@ -42,7 +42,9 @@ public enum ResponseCode {
 	
 	EMAIL_TOKEN_NOT_FOUND(false, HttpStatus.NOT_FOUND, "이메일 인증에 실패하였습니다. 인증 정보가 존재하지 않습니다."),
 	EMAIL_TOKEN_NOT_FOUND_RESEND(false, HttpStatus.NOT_FOUND, "이메일 인증에 실패하였습니다. 인증 메일을 다시 전송하였으니 이메일 인증을 다시 시도해주세요."),
-	EMAIL_TOKEN_SEND_FAILURE(false, HttpStatus.INTERNAL_SERVER_ERROR, "인증 메일 전송 도중 오류가 발생하였습니다.")
+	EMAIL_TOKEN_SEND_FAILURE(false, HttpStatus.INTERNAL_SERVER_ERROR, "인증 메일 전송 도중 오류가 발생하였습니다."),
+	
+	JWT_TOKEN_EXPIRED(false, HttpStatus.UNAUTHORIZED, "인증 토큰이 만료되었습니다.")
 	;
 	
 	private boolean isSuccess;

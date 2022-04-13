@@ -39,8 +39,8 @@ public class EmailConfirmEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -585266495686927898L;
 
 	@ApiParam(value = "로그인 ID")
-	@Column(name = "account_id")
-	private String accountId;
+	@Column(name = "id")
+	private String id;
 
 	@Id
 	@ApiParam(value = "토큰 UUID")
@@ -59,14 +59,14 @@ public class EmailConfirmEntity extends BaseEntity implements Serializable {
 	
 	/**
 	 * Create email confirmation token
-	 * @param accountId
+	 * @param id
 	 * @return
 	 */
-	public static EmailConfirmEntity createEmailConfirmToken(String accountId, Long mailTokenValidTime) {
+	public static EmailConfirmEntity createEmailConfirmToken(String id, Long mailTokenValidTime) {
 		EmailConfirmEntity emailConfirmEntity = new EmailConfirmEntity();
 		
 		emailConfirmEntity.expiredAt = LocalDateTime.now().plusMinutes(mailTokenValidTime); // 만료 시간
-		emailConfirmEntity.accountId = accountId;
+		emailConfirmEntity.id = id;
 		emailConfirmEntity.expired = false;
 		
 		return emailConfirmEntity;

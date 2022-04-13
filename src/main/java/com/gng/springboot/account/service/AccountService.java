@@ -1,6 +1,7 @@
 package com.gng.springboot.account.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,29 +38,29 @@ public class AccountService {
 	/**
 	 * Register account
 	 * @param accountRegisterDto
-	 * @return accountId
+	 * @return id
 	 */
 	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
 	public String accountRegister(AccountRegisterDto accountRegisterDto) {
 		AccountEntity accountEntity = AccountEntity.builder()
-				.accountId(accountRegisterDto.getAccountId())
-				.accountPwd(passwordEncoder.encode(accountRegisterDto.getAccountPwd()))
-				.accountName(accountRegisterDto.getAccountName())
-				.accountStatus(AccountStatusTypes.NOT_AUTHORIZED.getStatus())
+				.id(accountRegisterDto.getId())
+				.pwd(passwordEncoder.encode(accountRegisterDto.getPwd()))
+				.name(accountRegisterDto.getName())
+				.status(AccountStatusTypes.NOT_AUTHORIZED.getStatus())
 				.build();
 		
 		// Add role type(ROLE_USER)
 		accountEntity.addRoleType(RoleTypes.ROLE_USER);
 		
-		// Get account data with accountId and check conflict
-		Optional<AccountEntity> prevAccountEntityOptional = accountRepository.findByAccountId(accountEntity.getAccountId());
+		// Get account data with id and check conflict
+		Optional<AccountEntity> prevAccountEntityOptional = accountRepository.findById(accountEntity.getId());
 		
 		// Account conflict exceptions
 		prevAccountEntityOptional.ifPresent(account -> {
 			if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
 				// Do not send confirmation mail if account is already authorized
 				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
-			} else if(!passwordEncoder.matches(accountRegisterDto.getAccountPwd(), account.getAccountPwd())) {
+			} else if(!passwordEncoder.matches(accountRegisterDto.getPwd(), account.getPwd())) {
 				// Do not send confirmation mail if account is not authorized and password is different
 				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_PASSWORD_FAILURE);
 			}
@@ -67,23 +68,23 @@ public class AccountService {
 		
 		// Insert registration data if not exist
 		if(!prevAccountEntityOptional.isPresent()) {
-			accountRepository.save(accountEntity).getAccountId();
+			accountRepository.save(accountEntity).getId();
 		}
 		
 		// Send confirmation mail
-		emailConfirmService.sendEmailConfirmToken(accountEntity.getAccountId());
+		emailConfirmService.sendEmailConfirmToken(accountEntity.getId());
 		
-		return accountEntity.getAccountId();
+		return accountEntity.getId();
 	}
 	
 	/**
 	 * Confirm account
-	 * @param accountId
+	 * @param id
 	 */
 	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
-	public void confirmAccount(String accountId) {
+	public void confirmAccount(String id) {
 		// Retrieve account data
-		AccountEntity accountEntity = accountRepository.findByAccountId(accountId)
+		AccountEntity accountEntity = accountRepository.findById(id)
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_FOUND));
 		
 		// Set account status to 'USE'
@@ -99,25 +100,28 @@ public class AccountService {
 	 * @return accountLoginDto with JWT
 	 */
 	public AccountLoginDto accountLogin(AccountLoginDto accountLoginDto) {
-		// Get account data with accountId
-		AccountEntity accountEntity = accountRepository.findByAccountId(accountLoginDto.getAccountId())
+		// Get account data with id
+		AccountEntity accountEntity = accountRepository.findById(accountLoginDto.getId())
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_EXIST));
 		
 		// Check password
-		if(!passwordEncoder.matches(accountLoginDto.getAccountPwd(), accountEntity.getAccountPwd())) {
+		if(!passwordEncoder.matches(accountLoginDto.getPwd(), accountEntity.getPwd())) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_PASSWORD_FAILURE);
 		}
 		
 		// Check user status
 		if(accountEntity.getAccountStatus().equals(AccountStatusTypes.NOT_AUTHORIZED)) {
 			// Re-send confirmation mail if unauthorized account trying to login
-			emailConfirmService.sendEmailConfirmToken(accountEntity.getAccountId());
+			emailConfirmService.sendEmailConfirmToken(accountEntity.getId());
 			
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_NOT_AUTHORIZED);
 		} else if(accountEntity.getAccountStatus().equals(AccountStatusTypes.BLOCKED)) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_BLOCKED);
 		}
 		
-		return AccountLoginDto.of(accountEntity, jwtTokenProvider.createToken(accountEntity.getAccountId(), accountEntity.getRoleTypeSet()));
+		// UUID for refresh token's key
+		String uuid = UUID.randomUUID().toString();
+		
+		return AccountLoginDto.of(accountEntity, jwtTokenProvider, uuid);
 	}
 }

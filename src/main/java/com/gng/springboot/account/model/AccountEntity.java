@@ -44,7 +44,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-@ToString(exclude = "accountPwd")
+@ToString(exclude = "pwd")
 @Entity(name = "gng_accounts")
 @Table(name = "gng_accounts")
 public class AccountEntity extends BaseEntity implements UserDetails, Serializable {
@@ -58,21 +58,21 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	private Long gngAccountId;
 	
 	@ApiParam(value = "로그인 ID")
-	@Column(name = "account_id")
-	private String accountId;
+	@Column(name = "id")
+	private String id;
 	
 	@ApiParam(value = "로그인 PW")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@Column(name = "account_pwd")
-	private String accountPwd;
+	@Column(name = "pwd")
+	private String pwd;
 	
 	@ApiParam(value = "이름")
-	@Column(name = "account_name")
-	private String accountName;
+	@Column(name = "name")
+	private String name;
 	
 	@ApiParam(value = "계정 활성화 여부")
-	@Column(name = "account_status", columnDefinition = "BIT", length=1)
-	private int accountStatus;
+	@Column(name = "status", columnDefinition = "BIT", length=1)
+	private int status;
 
 	@Builder.Default // Default value to new HashSet
 	@ElementCollection(fetch = FetchType.EAGER) // Immediate loading
@@ -88,11 +88,11 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	}
 	
 	public AccountStatusTypes getAccountStatus() {
-		return AccountStatusTypes.getAccountStatusType(this.accountStatus);
+		return AccountStatusTypes.getAccountStatusType(this.status);
 	}
 	
 	public void setAccountStatus(AccountStatusTypes accountStatusType) {
-		this.accountStatus = accountStatusType.getStatus();
+		this.status = accountStatusType.getStatus();
 	}
 	
 	@Override
@@ -105,7 +105,7 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	
 	@Override
 	public String getUsername() {
-		return accountId;
+		return id;
 	}
 
 	@Override
@@ -130,6 +130,6 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 
 	@Override
 	public String getPassword() {
-		return accountPwd;
+		return pwd;
 	}
 }

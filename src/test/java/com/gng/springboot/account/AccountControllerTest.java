@@ -78,13 +78,13 @@ public class AccountControllerTest {
 		public void success() throws Exception {
 			// Given
 			final AccountRegisterDto accountRegisterDto = AccountRegisterDto.builder()
-					.accountId("testId@test.com")
-					.accountName("testName")
-					.accountPwd("testPwd1!")
+					.id("testId@test.com")
+					.name("testName")
+					.pwd("testPwd1!")
 					.build();
 					
 			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
-					.willReturn(accountRegisterDto.getAccountId());
+					.willReturn(accountRegisterDto.getId());
 			
 			// When
 			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountRegisterDto)));
@@ -103,9 +103,9 @@ public class AccountControllerTest {
 		public void fail() throws Exception {
 			// Given
 			final AccountRegisterDto accountRegisterDto = AccountRegisterDto.builder()
-					.accountId("")
-					.accountName("")
-					.accountPwd("failpwd")
+					.id("")
+					.name("")
+					.pwd("failpwd")
 					.build();
 					
 			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
@@ -140,8 +140,8 @@ public class AccountControllerTest {
 		public void success() throws Exception {
 			// Given
 			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
-					.accountId("testId@test.com")
-					.accountPwd("testPwd1!")
+					.id("testId@test.com")
+					.pwd("testPwd1!")
 					.build();
 			
 					
@@ -165,8 +165,8 @@ public class AccountControllerTest {
 		public void fail() throws Exception {
 			// Given
 			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
-					.accountId("")
-					.accountPwd("")
+					.id("")
+					.pwd("")
 					.build();
 					
 			BDDMockito.given(accountService.accountLogin(accountLoginDto))

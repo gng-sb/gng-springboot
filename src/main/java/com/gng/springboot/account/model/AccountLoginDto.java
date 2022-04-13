@@ -1,6 +1,5 @@
 package com.gng.springboot.account.model;
 
-import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gng.springboot.commons.constant.Constants;
+import com.gng.springboot.commons.model.BaseDto;
+import com.gng.springboot.jwt.component.JwtTokenProvider;
 
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
@@ -28,30 +29,31 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "accountPwd")
+@ToString(exclude = "pwd")
 @Component
-public class AccountLoginDto {
+public class AccountLoginDto extends BaseDto {
 	@ApiParam(value = "로그인 ID")
 	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
-	private String accountId;
+	private String id;
 	
 	@ApiParam(value = "로그인 PW")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@NotBlank(message = Constants.VALIDATE_ACCOUNT_PW_BLANK)
-	private String accountPwd;
+	private String pwd;
 	
 	@ApiParam(value = "이름")
-	private String accountName;
-	
-	@Transient
-	private String jwt;
-	
-	private AccountLoginDto(AccountEntity accountEntity, String jwt) {
+	private String name;
+
+	private AccountLoginDto(AccountEntity accountEntity, String accessToken, String refreshToken) {
 		BeanUtils.copyProperties(accountEntity, this);
-		this.jwt = jwt;
+		super.accessToken = accessToken;
+		super.refreshToken = refreshToken;
 	}
 	
-	public static AccountLoginDto of(AccountEntity accountEntity, String jwt) {
-		return new AccountLoginDto(accountEntity, jwt);
+	public static AccountLoginDto of(AccountEntity accountEntity, JwtTokenProvider jwtTokenProvider, String uuid) {
+		String accessToken = jwtTokenProvider.createAccessToken(accountEntity.getId(), accountEntity.getRoleTypeSet());
+		String refreshToken = jwtTokenProvider.createRefreshToken(uuid);
+		
+		return new AccountLoginDto(accountEntity, accessToken, refreshToken);
 	}
 }

@@ -27,19 +27,19 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "accountPwd")
+@ToString(exclude = "pwd")
 @Component
 public class AccountRegisterDto {
 	@ApiParam(value = "로그인 ID")
 	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
-	private String accountId;
+	private String id;
 
 	@ApiParam(value = "로그인 PW")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Pattern(regexp = Constants.REGEXP_PW, message = Constants.VALIDATE_ACCOUNT_PW_PATTERN)
-	private String accountPwd;
+	private String pwd;
 
 	@ApiParam(value = "이름")
 	@Size(min = 2, max = 20, message = Constants.VALIDATE_ACCOUNT_NAME_SIZE)
-	private String accountName;
+	private String name;
 }

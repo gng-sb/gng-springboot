@@ -24,13 +24,13 @@ public class JwtService implements UserDetailsService {
 	private final AccountRepository accountRepository;
 
 	/**
-	 * Load account by accountname(accountId)
+	 * Load account by user name(id)
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String accountId) {
-		log.debug("Load account by [accountId={}]", accountId);
+	public UserDetails loadUserByUsername(String id) {
+		log.debug("Load account by [id={}]", id);
 		
-		return accountRepository.findByAccountId(accountId)
+		return accountRepository.findById(id)
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_FOUND));
 	}
 }

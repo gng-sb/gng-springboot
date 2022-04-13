@@ -111,8 +111,12 @@ logging:
 # Logging configurations
 # ==============================
 jwt:
-  password: ENC(M5FL+GNorGE3OmRoVsndLShoXyo8PfS/96XPyqeahgk=)
-  valid-time: 3600
+  access:
+    password: ENC(M5FL+GNorGE3OmRoVsndLShoXyo8PfS/96XPyqeahgk=)
+    valid-time: 300
+  refresh:
+    password: ENC(M1G9NRqgFLIwnPdNLZ9RqIJI6LSK6ezvYEJD9Ln343A=)
+    valid-time: 604800
   
 # ==============================
 # Common configurations

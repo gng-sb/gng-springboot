@@ -14,7 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.constant.Constants.RoleTypes;
+import com.gng.springboot.commons.exception.custom.BusinessException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -38,42 +40,96 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtTokenProvider{
 	
 	private final UserDetailsService userDetailService;
-
-	@Value("${jwt.valid-time}")
-	private Long tokenValidTime;
 	
-	@Value("${jwt.password}")
-	private String jwtKey;
-	private String jwtBase64Key;
+	@Value("${jwt.access.valid-time}")
+	private Long ACCESS_TOKEN_VALID_TIME;
+	@Value("${jwt.refresh.valid-time}")
+	private Long REFRESH_TOKEN_VALID_TIME;
+
+	@Value("${jwt.access.password}")
+	private String ACCESS_TOKEN_KEY;
+	@Value("${jwt.refresh.password}")
+	private String REFRESH_TOKEN_KEY;
+	
+	public static final String X_AUTH_ACCESS_TOKEN = "X-AUTH-TOKEN";
+	public static final String X_AUTH_REFRESH_TOKEN = "X-AUTH-REFRESH-TOKEN";
+	
+	private String accessTokenBase64Key;
+	private String refreshTokenBase64Key;
 	
 	@PostConstruct
 	public void init() {
 		log.debug("Initialize JwtTokenProvider ...");
 		
-		jwtBase64Key = Base64.getEncoder().encodeToString(jwtKey.getBytes());
+		accessTokenBase64Key = Base64.getEncoder().encodeToString(ACCESS_TOKEN_KEY.getBytes());
+		refreshTokenBase64Key = Base64.getEncoder().encodeToString(REFRESH_TOKEN_KEY.getBytes());
 	}
 	
 	/**
-	 * Create token
+	 * Create access token
 	 * @param userPk
 	 * @param roles
-	 * @return
+	 * @return access token
 	 */
-	public String createToken(String userPk, Set<RoleTypes> roleTypeSet) {
-		log.debug("Create token [userPk={}] [roleTypeList={}]", userPk, roleTypeSet);
+	public String createAccessToken(String userPk, Set<RoleTypes> roleTypeSet) {
+		log.debug("Create access token [userPk={}] [roleTypeList={}]", userPk, roleTypeSet);
 		
 		Claims claims = Jwts.claims().setSubject(userPk);
-		
 		claims.put("roles", roleTypeSet);
 		
 		Date now = new Date();
+		Date expirationDate = new Date(now.getTime() + ACCESS_TOKEN_VALID_TIME * 1000);
 		
+		return buildJwt(claims, now, expirationDate, accessTokenBase64Key);
+	}
+	
+	
+	/**
+	 * Create refresh token
+	 * @param uuid key for refresh token
+	 * @return refresh token
+	 */
+	public String createRefreshToken(String uuid) {
+		log.debug("Create refresh token [uuid={}]", uuid);
+		
+		Claims claims = Jwts.claims();
+		claims.put("uuid", uuid);
+		
+		Date now = new Date();
+		Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME * 1000);
+		
+		return buildJwt(claims, now, expirationDate, refreshTokenBase64Key);
+	}
+	
+	/**
+	 * Build token
+	 * @param claims
+	 * @param now
+	 * @param expirationDate
+	 * @return token
+	 */
+	public String buildJwt(Claims claims, Date now, Date expirationDate, String tokenBase64Key) {
+		log.debug("[{}] [{}]", ACCESS_TOKEN_VALID_TIME, REFRESH_TOKEN_VALID_TIME);
+		log.debug(now.toString());
+		log.debug(expirationDate.toString());
 		return Jwts.builder()
 				.setClaims(claims) // Save data
 				.setIssuedAt(now) // Token creation time
-				.setExpiration(new Date(now.getTime() + tokenValidTime)) // Expire time
-				.signWith(SignatureAlgorithm.HS256, jwtBase64Key)
+				.setExpiration(expirationDate) // Expire time
+				.signWith(SignatureAlgorithm.HS256, tokenBase64Key)
 				.compact();
+	}
+	
+	/**
+	 * Get token from header of request("X-AUTH-(REFRESH)-TOKEN": "TOKEN value")
+	 * @param request
+	 * @param tokenType JwtTokenProvider.X_AUTH_ACCESS_TOKEN / JwtTokenProvider.X_AUTH_REFRESH_TOKEN
+	 * @return token
+	 */
+	public String resolveToken(HttpServletRequest request, String tokenType) {
+		log.debug("Resolve token [tokenType={}]", tokenType);
+		
+		return request.getHeader(tokenType);
 	}
 	
 	/**
@@ -82,9 +138,9 @@ public class JwtTokenProvider{
 	 * @return
 	 */
 	public Authentication getAuthentication(String token) {
-		log.debug("Get authentication from [token={}]", token);
+		log.debug("Get authentication");
 		
-		UserDetails userDetails = userDetailService.loadUserByUsername(this.getUserPk(token));
+		UserDetails userDetails = userDetailService.loadUserByUsername(this.getUserId(token));
 		
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
@@ -94,25 +150,12 @@ public class JwtTokenProvider{
 	 * @param token
 	 * @return
 	 */
-	public String getUserPk(String token) {
-		log.debug("Get user PK from [token={}]", token);
+	public String getUserId(String token) {
+		log.debug("Get user ID");
 		
-		return Jwts.parser()
-				.setSigningKey(jwtBase64Key)
-				.parseClaimsJws(token)
+		return getClaimsFromToken(token)
 				.getBody()
 				.getSubject();
-	}
-	
-	/**
-	 * Get token from header of request("X-AUTH-TOKEN": "TOKEN value")
-	 * @param request
-	 * @return
-	 */
-	public String resolveToken(HttpServletRequest request) {
-		log.debug("Resolve token [request={}]", request);
-		
-		return request.getHeader("X-AUTH-TOKEN");
 	}
 	
 	/**
@@ -121,33 +164,43 @@ public class JwtTokenProvider{
 	 * @return
 	 */
 	public boolean isTokenValid(String token) {
-		log.debug("Check token is valid [token={}]", token);
+		log.debug("Check token is valid");
 		
 		try {
-			Jws<Claims> claims = Jwts.parser()
-					.setSigningKey(jwtBase64Key)
-					.parseClaimsJws(token);
+			Jws<Claims> claims = getClaimsFromToken(token);
 			
-			log.debug("Valid token [token={}]", token);
+			log.debug("Valid token");
 			
 			return !claims.getBody()
 					.getExpiration()
 					.before(new Date());
-		} catch(SignatureException siex) {
-			log.error("Invalid JWT signature [token={}]", token);
+		} catch(SignatureException sigex) {
+			log.error("Invalid JWT signature");
 		} catch(MalformedJwtException malex) {
-			log.error("Invalid token [token={}]", token);
+			log.error("Invalid token");
 		} catch(ExpiredJwtException expex) {
-			log.error("Expired token [token={}]", token);
+			log.error("Expired token", expex);
+			throw new BusinessException(ResponseCode.JWT_TOKEN_EXPIRED);
 		} catch(UnsupportedJwtException unex) {
-			log.error("Unsupported token [token={}]", token);
+			log.error("Unsupported token");
 		} catch(IllegalArgumentException ilex) {
-			log.error("Empty token [token={}]", token);
+			log.error("Empty token");
 		} catch(Exception ex) {
-			log.error("Exception occurred in isTokenValid() [token={}]", token, ex);
+			log.error("Exception occurred in isTokenValid()", ex);
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Get claims from token
+	 * @param token jwt
+	 * @return claims
+	 */
+	public Jws<Claims> getClaimsFromToken(String token) {
+		return Jwts.parser()
+				.setSigningKey(accessTokenBase64Key)
+				.parseClaimsJws(token);
 	}
 	
 }

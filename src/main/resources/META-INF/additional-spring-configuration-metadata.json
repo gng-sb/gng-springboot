@@ -1,8 +1,23 @@
 {"properties": [
   {
-    "name": "jwt.password",
+    "name": "jwt.access.password",
     "type": "java.lang.String",
-    "description": "JWT secret key"
+    "description": "JWT secret key for access token"
+  },
+  {
+    "name": "jwt.access.valid-time",
+    "type": "java.lang.String",
+    "description": "JWT expire time for access token(Seconds)"
+  },
+  {
+    "name": "jwt.refresh.password",
+    "type": "java.lang.String",
+    "description": "JWT secret key for refresh token"
+  },
+  {
+    "name": "jwt.refresh.valid-time",
+    "type": "java.lang.String",
+    "description": "JWT expire time for refresh token(Seconds)"
   },
   {
     "name": "application.name",
@@ -13,11 +28,6 @@
     "name": "application.version",
     "type": "java.lang.String",
     "description": "Application version"
-  },
-  {
-    "name": "jwt.valid-time",
-    "type": "java.lang.String",
-    "description": "JWT expire time(Seconds)"
   },
   {
     "name": "mail.token.valid-time",
