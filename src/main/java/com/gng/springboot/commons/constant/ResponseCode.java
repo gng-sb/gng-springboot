@@ -22,6 +22,7 @@ public enum ResponseCode {
 	ACCOUNT_REGISTER_SUCCESS(true, HttpStatus.CREATED, "사용자 아이디 생성에 성공하였습니다. 가입 시 사용한 이메일을 통해 계정 인증을 완료해주세요."),
 	ACCOUNT_LOGIN_SUCCESS(true, HttpStatus.OK, "로그인에 성공하였습니다."),
 	EMAIL_TOKEN_CONFIRM_SUCCESS(true, HttpStatus.OK, "이메일 인증에 성공하였습니다."),
+	JWT_REFRESH_SUCCESS(true, HttpStatus.OK, "JWT 토큰 재발급에 성공하였습니다."),
 	
 	// FAILURE
 	BAD_REQUEST(false, HttpStatus.BAD_REQUEST, "입력 파라미터가 잘못되었습니다."),
@@ -44,7 +45,12 @@ public enum ResponseCode {
 	EMAIL_TOKEN_NOT_FOUND_RESEND(false, HttpStatus.NOT_FOUND, "이메일 인증에 실패하였습니다. 인증 메일을 다시 전송하였으니 이메일 인증을 다시 시도해주세요."),
 	EMAIL_TOKEN_SEND_FAILURE(false, HttpStatus.INTERNAL_SERVER_ERROR, "인증 메일 전송 도중 오류가 발생하였습니다."),
 	
-	JWT_TOKEN_EXPIRED(false, HttpStatus.UNAUTHORIZED, "인증 토큰이 만료되었습니다.")
+	FILTER_TOKEN_INVALID(false, HttpStatus.UNAUTHORIZED, "인증 토큰이 유효하지 않습니다."),
+	FILTER_ACCESS_DENIED(false, HttpStatus.FORBIDDEN, "페이지 접근 권한이 없습니다."),
+	
+	JWT_ACCESS_TOKEN_INVALID(false, HttpStatus.BAD_REQUEST, "ACCESS_TOKEN이 잘못되었습니다."),
+	JWT_REFRESH_TOKEN_INVALID(false, HttpStatus.BAD_REQUEST, "REFRESH_TOKEN이 잘못되었습니다."),
+	JWT_MISMATCH(false, HttpStatus.BAD_REQUEST, "REFRESH_TOKEN과 일치하는 사용자가 없습니다.")
 	;
 	
 	private boolean isSuccess;

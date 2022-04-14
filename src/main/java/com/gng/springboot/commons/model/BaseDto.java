@@ -6,9 +6,11 @@ import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(exclude = {"accessToken", "refreshToken"})
 @Component
 public class BaseDto {
 	@Transient

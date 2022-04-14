@@ -20,6 +20,9 @@ public class Constants {
 	public static final String VALIDATE_ACCOUNT_PW_PATTERN = "영문자, 숫자, 특수문자를 1개 이상 포함한 8자 ~ 20자 사이의 비밀번호를 입력해주세요.";
 	public static final String VALIDATE_ACCOUNT_NAME_BLANK = "사용자 이름을 입력해주세요.";
 	public static final String VALIDATE_ACCOUNT_NAME_SIZE = "2자 ~ 20자 사이의 사용자 이름을 입력해주세요.";
+
+	public static final String JWT_ACCESS_TOKEN_EMPTY = "Access token을 입력해주세요.";
+	public static final String JWT_REFRESH_TOKEN_EMPTY = "Access token을 입력해주세요.";
 	
 	
 	/**
@@ -31,14 +34,30 @@ public class Constants {
 	@Getter
 	@AllArgsConstructor
 	public enum RoleTypes {
-		ROLE_ADMIN("Admin", "/admin/**", "관리자"),
-		ROLE_USER("User", "/user/**", "사용자");
+		ROLE_ADMIN("ADMIN", "관리자"),
+		ROLE_USER("USER", "사용자");
 		
 		private String role;
-		private String matcher;
 		private String description;
 	}
 
+	/**
+	 * Page matcher enum
+	 * @author gchyoo
+	 *
+	 */
+	@ToString
+	@Getter
+	@AllArgsConstructor
+	public enum MatcherTypes {
+		ACCOUNT("/account/**", "계정 페이지"),
+		JWT("/jwt/**", "JWT 페이지"),
+		BOARD("/board/**", "게시판 페이지");
+		
+		private String matcher;
+		private String description;
+	}
+	
 	/**
 	 * User status enum
 	 * @author gchyoo

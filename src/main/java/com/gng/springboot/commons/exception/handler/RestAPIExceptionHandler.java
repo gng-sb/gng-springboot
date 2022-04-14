@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 /**
- * REST API exception handler
+ * Handle REST API exception
  * @author gchyoo
  *
  */
@@ -78,7 +78,7 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 			constraintViolation.getPropertyPath().forEach(node -> errorFields.add(node.getName()));
 		});
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+		return ResponseEntity.status(ResponseCode.BAD_REQUEST.getHttpStatus())
 				.body(new ErrorResponseDto(ResponseCode.BAD_REQUEST, extractErrorMessages(cex), errorFields));
 	}
 	
@@ -91,7 +91,7 @@ public class RestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<ErrorResponseDto> handleUnexpectedException(Exception ex) {
 		log.error("handleUnexpectedException() : ", ex);
 		
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		return ResponseEntity.status(ResponseCode.INTERNAL_SERVER_ERROR.getHttpStatus())
 				.body(new ErrorResponseDto(ResponseCode.INTERNAL_SERVER_ERROR));
 	}
 	

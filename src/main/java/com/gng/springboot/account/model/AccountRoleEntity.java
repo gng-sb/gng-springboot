@@ -38,16 +38,16 @@ public class AccountRoleEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 3092653173143502698L;
 
 	@Id
-	@ApiParam(value = "gng_account_roles 테이블 ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "gng_account_role_id")
+	@ApiParam(value = "gng_account_roles 테이블 ID")
 	private Long gngAccountRoleId;
 	
-	@ApiParam(value = "gng_accounts 테이블 ID")
 	@Column(name = "gng_account_id")
+	@ApiParam(value = "gng_accounts 테이블 ID")
 	private Long gngAccountId;
 	
-	@ApiParam(value = "사용자 권한")
 	@Column(name = "role_type", columnDefinition = "VARCHAR")
+	@ApiParam(value = "사용자 권한")
 	private RoleTypes roleType;
 }

@@ -18,6 +18,8 @@ import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.custom.NoRollbackBusinessException;
 import com.gng.springboot.email.service.EmailConfirmService;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
+import com.gng.springboot.jwt.model.AccountRefreshEntity;
+import com.gng.springboot.jwt.repository.AccountRefreshRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountService {
 	
 	private final AccountRepository accountRepository;
+	private final AccountRefreshRepository accountRefreshRepository;
 	private final EmailConfirmService emailConfirmService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
@@ -99,6 +102,7 @@ public class AccountService {
 	 * @param accountLoginDto
 	 * @return accountLoginDto with JWT
 	 */
+	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
 	public AccountLoginDto accountLogin(AccountLoginDto accountLoginDto) {
 		// Get account data with id
 		AccountEntity accountEntity = accountRepository.findById(accountLoginDto.getId())
@@ -121,7 +125,20 @@ public class AccountService {
 		
 		// UUID for refresh token's key
 		String uuid = UUID.randomUUID().toString();
+		String accessToken = jwtTokenProvider.createAccessToken(accountEntity.getId(), accountEntity.getRoleTypeSet());
+		String refreshToken = jwtTokenProvider.createRefreshToken(uuid);
 		
-		return AccountLoginDto.of(accountEntity, jwtTokenProvider, uuid);
+		// Build refresh token data
+		AccountRefreshEntity accountRefreshEntity = AccountRefreshEntity.builder()
+				.gngAccountId(accountEntity.getGngAccountId())
+				.uuid(uuid)
+				.accessToken(accessToken)
+				.refreshToken(refreshToken)
+				.build();
+
+		// Insert refresh token data
+		accountRefreshRepository.save(accountRefreshEntity);
+		
+		return AccountLoginDto.of(accountEntity, accessToken, refreshToken);
 	}
 }

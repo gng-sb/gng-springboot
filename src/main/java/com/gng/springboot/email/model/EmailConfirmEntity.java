@@ -38,23 +38,23 @@ public class EmailConfirmEntity extends BaseEntity implements Serializable {
 	
 	private static final long serialVersionUID = -585266495686927898L;
 
-	@ApiParam(value = "로그인 ID")
 	@Column(name = "id")
+	@ApiParam(value = "로그인 ID")
 	private String id;
 
 	@Id
-	@ApiParam(value = "토큰 UUID")
 	@GeneratedValue(generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	@Column(name = "uuid")
+	@ApiParam(value = "토큰 UUID")
 	private String uuid;
 	
-	@ApiParam(value = "만료 여부")
 	@Column(name = "expired", columnDefinition = "TINYINT")
+	@ApiParam(value = "만료 여부")
 	private boolean expired;
 	
-	@ApiParam(value = "만료 시각")
 	@Column(name = "expired_at")
+	@ApiParam(value = "만료 시각")
 	private LocalDateTime expiredAt;
 	
 	/**

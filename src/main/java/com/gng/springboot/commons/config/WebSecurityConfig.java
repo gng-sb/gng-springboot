@@ -15,7 +15,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.gng.springboot.commons.constant.Constants.MatcherTypes;
 import com.gng.springboot.commons.constant.Constants.RoleTypes;
+import com.gng.springboot.commons.exception.handler.AccessDeniedExceptionHandler;
+import com.gng.springboot.commons.exception.handler.AuthenticationExceptionHandler;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.jwt.filter.JwtAuthenticationFilter;
 
@@ -67,9 +70,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Disable session because of token
 				.and()
 				.authorizeRequests()
-				.antMatchers(RoleTypes.ROLE_ADMIN.getMatcher()).hasRole(RoleTypes.ROLE_ADMIN.getRole())
-				.antMatchers(RoleTypes.ROLE_USER.getMatcher()).hasRole(RoleTypes.ROLE_USER.getRole())
-				.antMatchers("/**").permitAll()
+				.antMatchers(MatcherTypes.ACCOUNT.getMatcher())
+						.permitAll()
+				.antMatchers(MatcherTypes.JWT.getMatcher())
+						.permitAll()
+				.antMatchers(HttpMethod.GET, MatcherTypes.BOARD.getMatcher())
+						.permitAll()
+				.antMatchers(HttpMethod.POST, MatcherTypes.BOARD.getMatcher())
+						.hasAnyRole(RoleTypes.ROLE_ADMIN.getRole(), RoleTypes.ROLE_USER.getRole())
+				.antMatchers(HttpMethod.DELETE, MatcherTypes.BOARD.getMatcher())
+						.hasAnyRole(RoleTypes.ROLE_ADMIN.getRole(), RoleTypes.ROLE_USER.getRole())
+				.anyRequest()
+						.permitAll()
+				.and()
+				.exceptionHandling() // Handle exceptions
+				.authenticationEntryPoint(new AuthenticationExceptionHandler())
+				.accessDeniedHandler(new AccessDeniedExceptionHandler())
 				.and()
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 	}

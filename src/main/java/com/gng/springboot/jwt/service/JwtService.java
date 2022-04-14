@@ -1,36 +1,71 @@
 package com.gng.springboot.jwt.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.gng.springboot.account.model.AccountEntity;
 import com.gng.springboot.account.repository.AccountRepository;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
+import com.gng.springboot.jwt.component.JwtTokenProvider;
+import com.gng.springboot.jwt.model.AccountRefreshEntity;
+import com.gng.springboot.jwt.model.JwtRefreshDto;
+import com.gng.springboot.jwt.repository.AccountRefreshRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Jwt service
  * @author gchyoo
  *
  */
-@Slf4j
 @RequiredArgsConstructor
 @Service
-public class JwtService implements UserDetailsService {
+public class JwtService {
 	
 	private final AccountRepository accountRepository;
+	private final AccountRefreshRepository accountRefreshRepository;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	/**
-	 * Load account by user name(id)
+	 * Refresh token
+	 * @param jwtRefreshDto 
+	 * @return jwtRefreshDto with refreshed access token
 	 */
-	@Override
-	public UserDetails loadUserByUsername(String id) {
-		log.debug("Load account by [id={}]", id);
+	public JwtRefreshDto refreshToken(JwtRefreshDto jwtRefreshDto) {
+		// Validate refresh token
+		if(!jwtTokenProvider.isTokenValid(jwtRefreshDto.getRefreshToken(), JwtTokenProvider.X_AUTH_REFRESH_TOKEN)) {
+			throw new BusinessException(ResponseCode.JWT_REFRESH_TOKEN_INVALID);
+		}
 		
-		return accountRepository.findById(id)
+		// Get user ID
+		AccountEntity accountEntity = accountRepository.findById(jwtRefreshDto.getId())
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_FOUND));
+		
+		String uuid = jwtTokenProvider.getClaimsFromToken(jwtRefreshDto.getRefreshToken(), JwtTokenProvider.X_AUTH_REFRESH_TOKEN)
+				.getBody()
+				.get("uuid")
+				.toString();
+		
+		// Select match refresh token by uuid and accountId
+		AccountRefreshEntity accountRefreshEntity = accountRefreshRepository.findByGngAccountIdAndUuid(accountEntity.getGngAccountId(), uuid)
+				.orElseThrow(() -> new BusinessException(ResponseCode.JWT_MISMATCH));
+		
+		// Check Access/Refresh token is same
+		if(!accountRefreshEntity.getAccessToken().equals(jwtRefreshDto.getAccessToken())) {
+			throw new BusinessException(ResponseCode.JWT_ACCESS_TOKEN_INVALID);
+		}
+		if(!accountRefreshEntity.getRefreshToken().equals(jwtRefreshDto.getRefreshToken())) {
+			throw new BusinessException(ResponseCode.JWT_REFRESH_TOKEN_INVALID);
+		}
+		
+		// Refresh access token
+		accountRefreshEntity.setAccessToken(jwtTokenProvider.createAccessToken(accountEntity.getId(), accountEntity.getRoleTypeSet()));
+		
+		// Save new access token
+		accountRefreshRepository.save(accountRefreshEntity);
+		
+		jwtRefreshDto.setAccessToken(accountRefreshEntity.getAccessToken());
+		
+		return jwtRefreshDto;
 	}
 }

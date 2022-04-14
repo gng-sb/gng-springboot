@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gng.springboot.commons.constant.Constants;
 import com.gng.springboot.commons.model.BaseDto;
-import com.gng.springboot.jwt.component.JwtTokenProvider;
 
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
@@ -32,13 +31,13 @@ import lombok.ToString;
 @ToString(exclude = "pwd")
 @Component
 public class AccountLoginDto extends BaseDto {
-	@ApiParam(value = "로그인 ID")
 	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
+	@ApiParam(value = "로그인 ID")
 	private String id;
 	
-	@ApiParam(value = "로그인 PW")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@NotBlank(message = Constants.VALIDATE_ACCOUNT_PW_BLANK)
+	@ApiParam(value = "로그인 PW")
 	private String pwd;
 	
 	@ApiParam(value = "이름")
@@ -50,10 +49,7 @@ public class AccountLoginDto extends BaseDto {
 		super.refreshToken = refreshToken;
 	}
 	
-	public static AccountLoginDto of(AccountEntity accountEntity, JwtTokenProvider jwtTokenProvider, String uuid) {
-		String accessToken = jwtTokenProvider.createAccessToken(accountEntity.getId(), accountEntity.getRoleTypeSet());
-		String refreshToken = jwtTokenProvider.createRefreshToken(uuid);
-		
+	public static AccountLoginDto of(AccountEntity accountEntity, String accessToken, String refreshToken) {
 		return new AccountLoginDto(accountEntity, accessToken, refreshToken);
 	}
 }

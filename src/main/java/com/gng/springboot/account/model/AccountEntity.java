@@ -52,26 +52,26 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	private static final long serialVersionUID = 739282898877248753L;
 
 	@Id
-	@ApiParam(value = "gng_accounts 테이블 ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "gng_account_id")
+	@ApiParam(value = "gng_accounts 테이블 ID")
 	private Long gngAccountId;
 	
-	@ApiParam(value = "로그인 ID")
 	@Column(name = "id")
+	@ApiParam(value = "로그인 ID")
 	private String id;
 	
-	@ApiParam(value = "로그인 PW")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "pwd")
+	@ApiParam(value = "로그인 PW")
 	private String pwd;
 	
-	@ApiParam(value = "이름")
 	@Column(name = "name")
+	@ApiParam(value = "이름")
 	private String name;
 	
-	@ApiParam(value = "계정 활성화 여부")
 	@Column(name = "status", columnDefinition = "BIT", length=1)
+	@ApiParam(value = "계정 활성화 여부")
 	private int status;
 
 	@Builder.Default // Default value to new HashSet
@@ -81,10 +81,10 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 			joinColumns = @JoinColumn(name = "gng_account_id", referencedColumnName = "gng_account_id") // Join column name
 	)
 	@Column(name = "role_type") // RoleTypes column name
-	private Set<RoleTypes> roleTypeSet = new HashSet<>();
+	private Set<String> roleTypeSet = new HashSet<>();
 	
 	public void addRoleType(RoleTypes roleType) {
-		this.roleTypeSet.add(roleType);
+		this.roleTypeSet.add(roleType.name());
 	}
 	
 	public AccountStatusTypes getAccountStatus() {
@@ -98,7 +98,6 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.roleTypeSet.stream()
-				.map(roleTypes -> roleTypes.getRole())
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 	}
