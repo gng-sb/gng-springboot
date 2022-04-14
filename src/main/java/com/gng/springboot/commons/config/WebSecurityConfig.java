@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,8 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtTokenProvider jwtTokenProvider;
 
-	@Value("${jwt.valid-time}")
-	private Long tokenValidTime;
+	@Value("${jwt.access.valid-time}")
+	private Long accessTokenValidTime;
 	
 	/**
 	 * Register AuthenticationManager bean
@@ -53,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
 		configuration.addAllowedHeader("*");
 		configuration.setAllowCredentials(true);
-		configuration.setMaxAge(tokenValidTime);
+		configuration.setMaxAge(accessTokenValidTime);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
