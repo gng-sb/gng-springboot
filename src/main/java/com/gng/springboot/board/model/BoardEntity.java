@@ -50,9 +50,9 @@ public class BoardEntity {
    @Column(name = "board_data", columnDefinition = "LONGTEXT")
    private String boardData;
    
-   @ApiParam(value = "생성 일자")
-   @Column(name = "created_at", columnDefinition = "DATETIME")
-   @DateTimeFormat(pattern = "yy-dd-MM")
-   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-dd-MM")
-   private String createTime;
+//   @ApiParam(value = "생성 일자")
+//   @Column(name = "created_at", columnDefinition = "DATETIME")
+//   @DateTimeFormat(pattern = "yy-dd-MM")
+//   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-dd-MM")
+//   private String createTime;
 }
