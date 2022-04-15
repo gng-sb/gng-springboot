@@ -1,5 +1,6 @@
 package com.gng.springboot.account.model;
 
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gng.springboot.commons.constant.Constants;
-import com.gng.springboot.commons.model.BaseDto;
 
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString(exclude = "pwd")
 @Component
-public class AccountLoginDto extends BaseDto {
+public class AccountLoginDto {
 	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
 	@ApiParam(value = "로그인 ID")
 	private String id;
@@ -43,10 +43,18 @@ public class AccountLoginDto extends BaseDto {
 	@ApiParam(value = "이름")
 	private String name;
 
+	@Transient
+	@ApiParam(value = "Access token")
+	protected String accessToken;
+
+	@Transient
+	@ApiParam(value = "Refresh token")
+	protected String refreshToken;
+	
 	private AccountLoginDto(AccountEntity accountEntity, String accessToken, String refreshToken) {
 		BeanUtils.copyProperties(accountEntity, this);
-		super.accessToken = accessToken;
-		super.refreshToken = refreshToken;
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
 	}
 	
 	public static AccountLoginDto of(AccountEntity accountEntity, String accessToken, String refreshToken) {

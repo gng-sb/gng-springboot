@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import org.springframework.stereotype.Component;
 
 import com.gng.springboot.commons.constant.Constants;
-import com.gng.springboot.commons.model.BaseDto;
 
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
@@ -27,7 +26,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString(exclude = {"accessToken", "refreshToken"})
 @Component
-public class JwtRefreshDto extends BaseDto {
+public class JwtRefreshDto {
 
 	@NotBlank(message = Constants.VALIDATE_ACCOUNT_ID_BLANK)
 	@ApiParam(value = "로그인 ID")

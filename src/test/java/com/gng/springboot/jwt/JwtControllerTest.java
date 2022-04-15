@@ -24,9 +24,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.gng.springboot.account.controller.AccountController;
-import com.gng.springboot.account.model.AccountRegisterDto;
-import com.gng.springboot.account.service.AccountService;
 import com.gng.springboot.commons.constant.Constants;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
@@ -36,6 +33,7 @@ import com.gng.springboot.jwt.controller.JwtController;
 import com.gng.springboot.jwt.model.JwtRefreshDto;
 import com.gng.springboot.jwt.repository.AccountRefreshRepository;
 import com.gng.springboot.jwt.service.JwtService;
+import com.gng.springboot.jwt.service.JwtTokenProviderService;
 import com.google.gson.Gson;
 import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration;
 
@@ -48,8 +46,8 @@ import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropert
 @Import(value = {EnableEncryptablePropertiesConfiguration.class})
 @WebMvcTest(JwtController.class) // 테스트할 컨트롤러 클래스명
 @MockBean(classes = {
-		JwtTokenProvider.class, JwtService.class,
-		AccountService.class, AccountRefreshRepository.class})
+		JwtTokenProvider.class, JwtService.class, 
+		JwtTokenProviderService.class, AccountRefreshRepository.class})
 @ExtendWith(MockitoExtension.class)
 @DisplayName("JwtController 테스트")
 public class JwtControllerTest {
@@ -69,7 +67,7 @@ public class JwtControllerTest {
 	@Nested
 	@DisplayName("JwtController JWT 재발급 테스트")
 	public class AccountRegisterTest {
-		private MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/account/register")
+		private MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/jwt")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.characterEncoding(StandardCharsets.UTF_8.toString());
@@ -80,8 +78,8 @@ public class JwtControllerTest {
 			// Given
 			final JwtRefreshDto jwtRefreshDto = JwtRefreshDto.builder()
 					.id("testId@test.com")
-					.accessToken("testName")
-					.refreshToken("testPwd1!")
+					.accessToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhMDEwOTI2MDM5MDlAZ21haWwuY29tIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY0OTkyODcyMywiZXhwIjoxNjQ5OTI5MDIzfQ.PUyM6zDAS2lvptw_tNBbagtN_ORPkrkNidLt3c2imzo")
+					.refreshToken("eyJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYmU0NDUzZjAtZjJiNy00M2JlLThlZDItMzg5ZDc4OGIzMTE4IiwiaWF0IjoxNjQ5OTI4NzIzLCJleHAiOjE2NTA1MzM1MjN9.WYFqPcV_vQklZgGen3VF3Y6Wlt6B6-on9sA5nMeGSag")
 					.build();
 					
 			BDDMockito.given(jwtService.refreshToken(jwtRefreshDto))
@@ -92,10 +90,10 @@ public class JwtControllerTest {
 			
 			// Then
 			resultActions
-					.andDo(MockMvcResultHandlers.print()) // 응답 출력
-					.andExpect(MockMvcResultMatchers.status().isCreated())
-					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.ACCOUNT_REGISTER_SUCCESS.getHttpStatus().name()))
-					.andExpect(MockMvcResultMatchers.jsonPath("$.messages[0]").value(ResponseCode.ACCOUNT_REGISTER_SUCCESS.getMessage()))
+					.andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().isOk())
+					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.JWT_REFRESH_SUCCESS.getHttpStatus().name()))
+					.andExpect(MockMvcResultMatchers.jsonPath("$.messages[0]").value(ResponseCode.JWT_REFRESH_SUCCESS.getMessage()))
 					.andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
 		}
 
@@ -117,11 +115,11 @@ public class JwtControllerTest {
 			
 			// Then
 			resultActions
-					.andDo(MockMvcResultHandlers.print()) // 응답 출력
+					.andDo(MockMvcResultHandlers.print())
 					.andExpect(MockMvcResultMatchers.status().isBadRequest())
 					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.BAD_REQUEST.getHttpStatus().name()))
-					.andExpect(MockMvcResultMatchers.jsonPath("$.messages").value(Matchers.containsInAnyOrder( // 순서 상관없이 포함하고 있는지 확인
-							Constants.VALIDATE_ACCOUNT_PW_PATTERN, Constants.VALIDATE_ACCOUNT_ID_EMAIL, Constants.VALIDATE_ACCOUNT_NAME_SIZE
+					.andExpect(MockMvcResultMatchers.jsonPath("$.messages").value(Matchers.containsInAnyOrder(
+							Constants.JWT_ACCESS_TOKEN_EMPTY, Constants.JWT_REFRESH_TOKEN_EMPTY, Constants.VALIDATE_ACCOUNT_ID_BLANK
 							)))
 					.andExpect(MockMvcResultMatchers.jsonPath("$.success").value(false));
 		}

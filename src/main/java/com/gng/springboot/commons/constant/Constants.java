@@ -22,7 +22,7 @@ public class Constants {
 	public static final String VALIDATE_ACCOUNT_NAME_SIZE = "2자 ~ 20자 사이의 사용자 이름을 입력해주세요.";
 
 	public static final String JWT_ACCESS_TOKEN_EMPTY = "Access token을 입력해주세요.";
-	public static final String JWT_REFRESH_TOKEN_EMPTY = "Access token을 입력해주세요.";
+	public static final String JWT_REFRESH_TOKEN_EMPTY = "Refresh token을 입력해주세요.";
 	
 	
 	/**
