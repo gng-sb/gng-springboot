@@ -56,28 +56,38 @@ public class AccountService {
 		accountEntity.addRoleType(RoleTypes.ROLE_USER);
 		
 		// Get account data with id and check conflict
-		Optional<AccountEntity> prevAccountEntityOptional = accountRepository.findById(accountEntity.getId());
 		
-		// Account conflict exceptions
-		prevAccountEntityOptional.ifPresent(account -> {
-			if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
-				// Do not send confirmation mail if account is already authorized
-				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
-			} else if(!passwordEncoder.matches(accountRegisterDto.getPwd(), account.getPwd())) {
-				// Do not send confirmation mail if account is not authorized and password is different
-				throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_PASSWORD_FAILURE);
-			}
-		});
 		
 		// Insert registration data if not exist
-		if(!prevAccountEntityOptional.isPresent()) {
-			accountRepository.save(accountEntity).getId();
+		if(!checkAccountExist(accountEntity.getId(), accountRegisterDto.getPwd())) {
+			accountRepository.save(accountEntity);
 		}
 		
-		// Send confirmation mail
-		emailConfirmService.sendEmailConfirmToken(accountEntity.getId());
+		return accountRegisterDto.getId();
+	}
+	
+	/**
+	 * Check id/pwd is same if conflict
+	 * @param currentPwd
+	 * @return
+	 */
+	public boolean checkAccountExist(String id, String currentPwd) {
+		Optional<AccountEntity> prevAccountEntityOptional = accountRepository.findById(id);
 		
-		return accountEntity.getId();
+		// Account conflict exceptions
+		if(prevAccountEntityOptional != null) {
+			prevAccountEntityOptional.ifPresent(account -> {
+				if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
+					// Do not send confirmation mail if account is already authorized
+					throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
+				} else if(!passwordEncoder.matches(currentPwd, account.getPwd())) {
+					// Do not send confirmation mail if account is not authorized and password is different
+					throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_PASSWORD_FAILURE);
+				}
+			});
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -85,7 +95,7 @@ public class AccountService {
 	 * @param id
 	 */
 	@Transactional(rollbackFor = BusinessException.class, noRollbackFor = NoRollbackBusinessException.class)
-	public void confirmAccount(String id) {
+	public boolean accountConfirm(String id) {
 		// Retrieve account data
 		AccountEntity accountEntity = accountRepository.findById(id)
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_FOUND));
@@ -95,6 +105,8 @@ public class AccountService {
 		
 		// Update account status
 		accountRepository.save(accountEntity);
+		
+		return true;
 	}
 	
 	/**

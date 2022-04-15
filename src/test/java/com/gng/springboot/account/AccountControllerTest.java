@@ -33,6 +33,7 @@ import com.gng.springboot.commons.constant.Constants;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.handler.RestAPIExceptionHandler;
+import com.gng.springboot.email.service.EmailConfirmService;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.jwt.service.JwtTokenProviderService;
 import com.google.gson.Gson;
@@ -57,9 +58,12 @@ public class AccountControllerTest {
 	@MockBean
 	private AccountService accountService;
 	
+	@MockBean
+	private EmailConfirmService emailConfirmService;
+	
 	@BeforeEach
 	public void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(new AccountController(accountService))
+		mockMvc = MockMvcBuilders.standaloneSetup(new AccountController(accountService, emailConfirmService))
 				.setControllerAdvice(RestAPIExceptionHandler.class) // ControllerAdvice 클래스 추가
 				.addFilters(new CharacterEncodingFilter(StandardCharsets.UTF_8.toString(), true)) // UTF-8 필터 추가
 				.build();

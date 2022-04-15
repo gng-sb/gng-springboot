@@ -44,7 +44,7 @@ public class EmailConfirmController {
 		log.info("Confirm email [uuid={}]", uuid);
 		
 		String id = emailConfirmService.confirmEmail(uuid);
-		accountService.confirmAccount(id);
+		accountService.accountConfirm(id);
 
 		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.EMAIL_TOKEN_CONFIRM_SUCCESS, id);
 		

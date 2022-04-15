@@ -13,6 +13,7 @@ import com.gng.springboot.account.model.AccountRegisterDto;
 import com.gng.springboot.account.service.AccountService;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.model.ResponseDto;
+import com.gng.springboot.email.service.EmailConfirmService;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class AccountController {
 	private final AccountService accountService;
+	private final EmailConfirmService emailConfirmService;
 	
 	@ApiOperation(
 			value = "계정 등록",
@@ -46,6 +48,9 @@ public class AccountController {
 		log.info("Register account [{}]", accountRegisterDto);
 		
 		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.accountRegister(accountRegisterDto));
+
+		// Send confirmation mail
+		emailConfirmService.sendEmailConfirmToken(accountRegisterDto.getId());
 		
 		return ResponseEntity.status(responseDto.getHttpStatus())
 				.body(responseDto);
