@@ -69,7 +69,7 @@ dependencies {
 	
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mockito:mockito-all:1.9.5'
+	testImplementation 'org.mockito:mockito-all:1.10.19'
 }
 
 tasks.named('test') {
