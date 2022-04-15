@@ -1,4 +1,4 @@
-package com.gng.springboot.account;
+package com.gng.springboot.jwt;
 
 import java.nio.charset.StandardCharsets;
 
@@ -25,48 +25,49 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.gng.springboot.account.controller.AccountController;
-import com.gng.springboot.account.model.AccountLoginDto;
 import com.gng.springboot.account.model.AccountRegisterDto;
-import com.gng.springboot.account.repository.AccountRepository;
 import com.gng.springboot.account.service.AccountService;
 import com.gng.springboot.commons.constant.Constants;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.handler.RestAPIExceptionHandler;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
-import com.gng.springboot.jwt.service.JwtTokenProviderService;
+import com.gng.springboot.jwt.controller.JwtController;
+import com.gng.springboot.jwt.model.JwtRefreshDto;
+import com.gng.springboot.jwt.repository.AccountRefreshRepository;
+import com.gng.springboot.jwt.service.JwtService;
 import com.google.gson.Gson;
 import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration;
 
 /**
- * Account controller test
+ * JWT controller test
  * @author gchyoo
  *
  */
 @TestPropertySource(locations = "classpath:application.yml")
 @Import(value = {EnableEncryptablePropertiesConfiguration.class})
-@WebMvcTest(AccountController.class) // 테스트할 컨트롤러 클래스명
+@WebMvcTest(JwtController.class) // 테스트할 컨트롤러 클래스명
 @MockBean(classes = {
-		JwtTokenProvider.class, JwtTokenProviderService.class,
-		AccountRepository.class})
+		JwtTokenProvider.class, JwtService.class,
+		AccountService.class, AccountRefreshRepository.class})
 @ExtendWith(MockitoExtension.class)
-@DisplayName("AccountController 테스트")
-public class AccountControllerTest {
+@DisplayName("JwtController 테스트")
+public class JwtControllerTest {
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private AccountService accountService;
+	private JwtService jwtService;
 	
 	@BeforeEach
 	public void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(new AccountController(accountService))
+		mockMvc = MockMvcBuilders.standaloneSetup(new JwtController(jwtService))
 				.setControllerAdvice(RestAPIExceptionHandler.class) // ControllerAdvice 클래스 추가
 				.addFilters(new CharacterEncodingFilter(StandardCharsets.UTF_8.toString(), true)) // UTF-8 필터 추가
 				.build();
 	}
 	
 	@Nested
-	@DisplayName("AccountController 계정 등록 테스트")
+	@DisplayName("JwtController JWT 재발급 테스트")
 	public class AccountRegisterTest {
 		private MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/account/register")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -77,17 +78,17 @@ public class AccountControllerTest {
 		@DisplayName("성공")
 		public void success() throws Exception {
 			// Given
-			final AccountRegisterDto accountRegisterDto = AccountRegisterDto.builder()
+			final JwtRefreshDto jwtRefreshDto = JwtRefreshDto.builder()
 					.id("testId@test.com")
-					.name("testName")
-					.pwd("testPwd1!")
+					.accessToken("testName")
+					.refreshToken("testPwd1!")
 					.build();
 					
-			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
-					.willReturn(accountRegisterDto.getId());
+			BDDMockito.given(jwtService.refreshToken(jwtRefreshDto))
+					.willReturn(jwtRefreshDto);
 			
 			// When
-			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountRegisterDto)));
+			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(jwtRefreshDto)));
 			
 			// Then
 			resultActions
@@ -102,17 +103,17 @@ public class AccountControllerTest {
 		@DisplayName("실패")
 		public void fail() throws Exception {
 			// Given
-			final AccountRegisterDto accountRegisterDto = AccountRegisterDto.builder()
+			final JwtRefreshDto jwtRefreshDto = JwtRefreshDto.builder()
 					.id("")
-					.name("")
-					.pwd("failpwd")
+					.accessToken("")
+					.refreshToken("")
 					.build();
 					
-			BDDMockito.given(accountService.accountRegister(accountRegisterDto))
+			BDDMockito.given(jwtService.refreshToken(jwtRefreshDto))
 					.willThrow(BusinessException.class);
 			
 			// When
-			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountRegisterDto)));
+			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(jwtRefreshDto)));
 			
 			// Then
 			resultActions
@@ -121,67 +122,6 @@ public class AccountControllerTest {
 					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.BAD_REQUEST.getHttpStatus().name()))
 					.andExpect(MockMvcResultMatchers.jsonPath("$.messages").value(Matchers.containsInAnyOrder( // 순서 상관없이 포함하고 있는지 확인
 							Constants.VALIDATE_ACCOUNT_PW_PATTERN, Constants.VALIDATE_ACCOUNT_ID_EMAIL, Constants.VALIDATE_ACCOUNT_NAME_SIZE
-							)))
-					.andExpect(MockMvcResultMatchers.jsonPath("$.success").value(false));
-		}
-	}
-	
-
-	@Nested
-	@DisplayName("AccountController 계정 로그인 테스트")
-	public class AccountLoginTest {
-		private MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/account/login")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON)
-				.characterEncoding(StandardCharsets.UTF_8.toString());
-		
-		@Test
-		@DisplayName("성공")
-		public void success() throws Exception {
-			// Given
-			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
-					.id("testId@test.com")
-					.pwd("testPwd1!")
-					.build();
-			
-					
-			BDDMockito.given(accountService.accountLogin(accountLoginDto))
-					.willReturn(accountLoginDto);
-			
-			// When
-			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountLoginDto)));
-			
-			// Then
-			resultActions
-					.andDo(MockMvcResultHandlers.print())
-					.andExpect(MockMvcResultMatchers.status().isOk())
-					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.ACCOUNT_LOGIN_SUCCESS.getHttpStatus().name()))
-					.andExpect(MockMvcResultMatchers.jsonPath("$.messages[0]").value(ResponseCode.ACCOUNT_LOGIN_SUCCESS.getMessage()))
-					.andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
-		}
-
-		@Test
-		@DisplayName("실패")
-		public void fail() throws Exception {
-			// Given
-			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
-					.id("")
-					.pwd("")
-					.build();
-					
-			BDDMockito.given(accountService.accountLogin(accountLoginDto))
-					.willThrow(BusinessException.class);
-			
-			// When
-			final ResultActions resultActions = mockMvc.perform(request.content(new Gson().toJson(accountLoginDto)));
-			
-			// Then
-			resultActions
-					.andDo(MockMvcResultHandlers.print())
-					.andExpect(MockMvcResultMatchers.status().isBadRequest())
-					.andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value(ResponseCode.BAD_REQUEST.getHttpStatus().name()))
-					.andExpect(MockMvcResultMatchers.jsonPath("$.messages").value(Matchers.containsInAnyOrder(
-							Constants.VALIDATE_ACCOUNT_ID_EMAIL, Constants.VALIDATE_ACCOUNT_PW_BLANK
 							)))
 					.andExpect(MockMvcResultMatchers.jsonPath("$.success").value(false));
 		}

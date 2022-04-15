@@ -199,6 +199,11 @@ public class JwtTokenProvider{
 				.parseClaimsJws(token);
 	}
 	
+	/**
+	 * Get token key by token type(access/refresh)
+	 * @param tokenType X_AUTH_ACCESS_TOKEN, X_AUTH_REFRESH_TOKEN
+	 * @return tokenBase64Key
+	 */
 	public String getTokenKey(String tokenType) {
 		if(tokenType.equals(X_AUTH_ACCESS_TOKEN)) {
 			return accessTokenBase64Key;
