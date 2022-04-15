@@ -39,8 +39,8 @@ public class BoardEntity {
    private Long gngBoardId;
    
    @ApiParam(value = "로그인 ID")
-   @Column(name = "user_id")
-   private String userId;
+   @Column(name = "gng_account_id")
+   private String gngAccountId;
    
    @ApiParam(value = "게시글 제목")
    @Column(name = "board_name")
