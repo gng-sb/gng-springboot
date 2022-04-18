@@ -15,6 +15,8 @@
 
 > # gng-react(Frontend)
 
+- This project is in private repository.
+
 - ## Tech stack
 ```
 - ReactJS
