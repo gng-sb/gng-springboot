@@ -16,7 +16,6 @@ import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.custom.NoRollbackBusinessException;
-import com.gng.springboot.email.service.EmailConfirmService;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.jwt.model.AccountRefreshEntity;
 import com.gng.springboot.jwt.repository.AccountRefreshRepository;
@@ -34,7 +33,6 @@ public class AccountService {
 	
 	private final AccountRepository accountRepository;
 	private final AccountRefreshRepository accountRefreshRepository;
-	private final EmailConfirmService emailConfirmService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	
@@ -127,9 +125,6 @@ public class AccountService {
 		
 		// Check user status
 		if(accountEntity.getAccountStatus().equals(AccountStatusTypes.NOT_AUTHORIZED)) {
-			// Re-send confirmation mail if unauthorized account trying to login
-			emailConfirmService.sendEmailConfirmToken(accountEntity.getId());
-			
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_NOT_AUTHORIZED);
 		} else if(accountEntity.getAccountStatus().equals(AccountStatusTypes.BLOCKED)) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_BLOCKED);

@@ -1,8 +1,6 @@
 package com.gng.springboot.account;
 
 
-import static org.hamcrest.CoreMatchers.any;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +44,7 @@ public class AccountServiceTest {
 	private AccountRepository accountRepository;
 	
 	@Mock
-	private EmailConfirmService emailConfirmService;
+	private EmailConfirmService emailConfirmServiceImpl;
 	
 	@Mock
 	private PasswordEncoder passwordEncoder;

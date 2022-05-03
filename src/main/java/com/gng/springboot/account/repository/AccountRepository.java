@@ -13,4 +13,5 @@ import com.gng.springboot.account.model.AccountEntity;
  */
 public interface AccountRepository extends JpaRepository<AccountEntity, Long>{
 	public Optional<AccountEntity> findById(String id);
+	public void deleteById(String id);
 }

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -58,9 +57,6 @@ public class AccountControllerTest extends BaseControllerTest {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@Mock
-	private JavaMailSender javaMailSender;
-
 	private final static String id = "testId@test.com";
 	private final static String name = "testName";
 	private final static String pwd = "testPwd1!";
@@ -89,7 +85,12 @@ public class AccountControllerTest extends BaseControllerTest {
 					.build();
 			
 			EmailConfirmEntity emailConfirmEntity = EmailConfirmEntity.createEmailConfirmToken(id, 5000L);
-			emailConfirmEntity = emailConfirmRepository.save(emailConfirmEntity);
+			emailConfirmRepository.save(emailConfirmEntity);
+
+			// Prevent send email
+			BDDMockito.willDoNothing()
+					.given(emailConfirmService)
+					.sendEmailConfirmToken(BDDMockito.any());
 			
 			// When
 			final ResultActions resultActions = mockMvc.perform(getRequest(uri).content(toJson(accountRegisterDto)));
@@ -146,9 +147,10 @@ public class AccountControllerTest extends BaseControllerTest {
 					.build();
 			
 			final AccountEntity accountEntity = modelMapper.map(accountLoginDto, AccountEntity.class);
+			accountEntity.setGngAccountId(1L);
 			accountEntity.setStatus(AccountStatusTypes.USE.getStatus());
 			accountEntity.setPwd(passwordEncoder.encode(pwd));
-
+			
 			accountRepository.save(accountEntity);
 			
 			// When
@@ -166,7 +168,7 @@ public class AccountControllerTest extends BaseControllerTest {
 
 		@Test
 		@DisplayName("이메일 인증되지 않은 계정")
-		public void notAuthorized() throws Exception {
+		public void unauthorized() throws Exception {
 			// Given
 			final AccountLoginDto accountLoginDto = AccountLoginDto.builder()
 					.id(id)
@@ -174,14 +176,10 @@ public class AccountControllerTest extends BaseControllerTest {
 					.build();
 			
 			final AccountEntity accountEntity = modelMapper.map(accountLoginDto, AccountEntity.class);
+			accountEntity.setGngAccountId(1L);
 			accountEntity.setPwd(passwordEncoder.encode(pwd));
 			
 			accountRepository.save(accountEntity);
-			
-			// Prevent send email
-			BDDMockito.doNothing()
-					.when(emailConfirmService)
-					.sendEmailConfirmToken(id);
 			
 			// When
 			final ResultActions resultActions = mockMvc.perform(getRequest(uri).content(toJson(accountLoginDto)));

@@ -37,8 +37,8 @@ spring:
 # Email configurations
 # ==============================
   mail:
-    username: none
-    password: none
+    username: test@mail.com
+    password: testpwd
 
 # ==============================
 # Jasypt configurations

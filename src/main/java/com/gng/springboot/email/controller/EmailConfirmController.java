@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class EmailConfirmController {
 	
-	private final EmailConfirmService emailConfirmService;
+	private final EmailConfirmService emailConfirmServiceImpl;
 	private final AccountService accountService;
 	
 	@ApiOperation(
@@ -43,7 +43,7 @@ public class EmailConfirmController {
 			) {
 		log.info("Confirm email [uuid={}]", uuid);
 		
-		String id = emailConfirmService.confirmEmail(uuid);
+		String id = emailConfirmServiceImpl.confirmEmail(uuid);
 		accountService.accountConfirm(id);
 
 		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.EMAIL_TOKEN_CONFIRM_SUCCESS, id);

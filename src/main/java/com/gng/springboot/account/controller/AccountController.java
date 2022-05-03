@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class AccountController {
 	private final AccountService accountService;
-	private final EmailConfirmService emailConfirmService;
+	private final EmailConfirmService emailConfirmServiceImpl;
 	
 	@ApiOperation(
 			value = "계정 등록",
@@ -51,7 +51,7 @@ public class AccountController {
 		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.accountRegister(accountRegisterDto));
 
 		// Send confirmation mail
-		emailConfirmService.sendEmailConfirmToken(accountRegisterDto.getId());
+		emailConfirmServiceImpl.sendEmailConfirmToken(accountRegisterDto.getId());
 		
 		return ResponseEntity.status(responseDto.getHttpStatus())
 				.body(responseDto);

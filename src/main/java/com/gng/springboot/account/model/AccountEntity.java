@@ -29,6 +29,7 @@ import com.gng.springboot.commons.model.BaseEntity;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -45,6 +46,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @ToString(exclude = "pwd")
+@EqualsAndHashCode(callSuper = false, of = {"gngAccountId"})
 @Entity(name = "gng_accounts")
 @Table(name = "gng_accounts")
 public class AccountEntity extends BaseEntity implements UserDetails, Serializable {
