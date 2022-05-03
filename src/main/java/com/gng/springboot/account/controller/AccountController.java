@@ -2,6 +2,7 @@ package com.gng.springboot.account.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +42,7 @@ public class AccountController {
 			value = "계정 등록",
 			notes = "사용자가 입력한 정보로 계정 등록과 인증 메일 전송을 수행한다."
 			)
-	@PostMapping("/register")
+	@PostMapping(value = "/register", produces = {MediaTypes.HAL_JSON_VALUE})
 	public ResponseEntity<ResponseDto<String>> accountRegister(
 			@Valid @RequestBody(required = true) AccountRegisterDto accountRegisterDto
 			) {
@@ -60,7 +61,7 @@ public class AccountController {
 			value = "계정 로그인",
 			notes = "사용자가 입력한 ID/PW로 로그인을 수행한다."
 			)
-	@PostMapping("/login")
+	@PostMapping(value = "/login", produces = {MediaTypes.HAL_JSON_VALUE})
 	public ResponseEntity<ResponseDto<AccountLoginDto>> accountLogin(
 			@Valid @RequestBody(required = true) AccountLoginDto accountLoginDto
 			) {
