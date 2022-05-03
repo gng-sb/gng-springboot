@@ -12,9 +12,6 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(Gy2hW7Y9vVX1JnBQ8JhZBCkKjncuQKtkIZsc4h72dqeA7QeaCMDfoZvWkN1IMAE+axWpbFDJh/oBiysGNloK1QmJcekLdZw7ciEavSsKe5OFpEPpWDV3KxuDnKKljqg1TxaUxgNwxqk=)
-    username: ENC(nOK+URH2mcp9I5rujkWpKwYviaqHHnB3)
-    password: ENC(JbJvMEJZmMFT5IVaZUaoNDyzqqyy6vrjPNCbDOyoegw=)
     
   jpa:
     open-in-view: false
@@ -23,6 +20,9 @@ spring:
       hibernate:
         '[format_sql]': true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        jdbc:
+          lob:
+            '[non_contextual_creation]': true # 실행 시 Warning 제거
     hibernate:
       # create : 기존 테이블 삭제 후 재생성
       # create-drop : create + 종료시점에 테이블 삭제
@@ -41,8 +41,6 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ENC(Ajt2vj7Oi+mZB6IC6uNAj4J6UvveTllKNXfb+9jAUYxW4zs1u61C3w==)
-    password: ENC(m67bWfsGzUfM+noexMZrlSQujV2HIM07aACeljS+QK85LpHZhHZg7A==)
     properties:
       mail:
         smtp:
@@ -58,9 +56,6 @@ spring:
           writetimeout: 5000
 
 mail:
-  host: localhost
-  # ENC(WCwNUld0F1m6fCKejbhilowqDAhLYnyemsr0WdxVj/s=)
-  port: 3000
   token:
     valid-time: 5
 
@@ -75,49 +70,7 @@ jasypt:
     provider-name: SunJCE
     salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
     string-output-type: base64
-    password: ${jasypt.encryptor.password}
 
-# ==============================
-# Logging configurations
-# ==============================
-logging:
-  file:
-    name: logs/gng-springboot.log
-  level:
-    root: debug
-    '[org.springframework.web]': info
-    '[com.zaxxer.hikari]': warn
-    '[sun.rmi]': warn
-    '[org.apache]': warn
-    '[org.hibernate.hql.internal]': warn
-    '[javax.activation]': warn
-    '[javax.mail]': warn
-    '[javax.management.remote.rmi]': warn
-    '[jdk.event.security]': warn
-    '[com.sun.mail.smtp]': warn
-    '[32mjavax.activation]': warn
-    
-  
-  pattern:
-    console: "[%d{yyyy-MM-dd HH:mm:ss}][%highlight(%-5level)][%magenta(%-12.12thread)][%green(%-37logger{36})][%cyan(%method:%line)] - %msg%n"
-    file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-4relative][%thread][%-37logger{36}] - %msg%n"
-  logback:
-    rollingpolicy:
-      max-file-size: 50MB
-      max-history: 7
-      file-name-pattern: "logs/backup/gng-springboot.log.%d{yyyy-MM-dd}-%i.zip"
-
-# ==============================
-# Logging configurations
-# ==============================
-jwt:
-  access:
-    password: ENC(M5FL+GNorGE3OmRoVsndLShoXyo8PfS/96XPyqeahgk=)
-    valid-time: 300
-  refresh:
-    password: ENC(M1G9NRqgFLIwnPdNLZ9RqIJI6LSK6ezvYEJD9Ln343A=)
-    valid-time: 604800
-  
 # ==============================
 # Common configurations
 # ==============================
