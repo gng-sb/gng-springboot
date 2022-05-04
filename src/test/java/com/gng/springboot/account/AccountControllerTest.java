@@ -12,8 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -48,8 +48,9 @@ public class AccountControllerTest extends BaseControllerTest {
 	@Autowired
 	private AccountRepository accountRepository;
 	
-	@Mock
-	private EmailConfirmService emailConfirmService;
+	// Prevent email confirm in test
+	@MockBean
+	private EmailConfirmService emailConfirmServiceImpl;
 	
 	@Autowired
 	private EmailConfirmRepository emailConfirmRepository;
@@ -63,7 +64,7 @@ public class AccountControllerTest extends BaseControllerTest {
 	
 	@BeforeEach
 	protected void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(new AccountController(accountService, emailConfirmService))
+		mockMvc = MockMvcBuilders.standaloneSetup(new AccountController(accountService, emailConfirmServiceImpl))
 				.setControllerAdvice(RestAPIExceptionHandler.class) // ControllerAdvice 클래스 추가
 				.addFilters(new CharacterEncodingFilter(StandardCharsets.UTF_8.toString(), true)) // UTF-8 필터 추가
 				.build();
@@ -86,11 +87,6 @@ public class AccountControllerTest extends BaseControllerTest {
 			
 			EmailConfirmEntity emailConfirmEntity = EmailConfirmEntity.createEmailConfirmToken(id, 5000L);
 			emailConfirmRepository.save(emailConfirmEntity);
-
-			// Prevent send email
-			BDDMockito.willDoNothing()
-					.given(emailConfirmService)
-					.sendEmailConfirmToken(BDDMockito.any());
 			
 			// When
 			final ResultActions resultActions = mockMvc.perform(getRequest(uri).content(toJson(accountRegisterDto)));

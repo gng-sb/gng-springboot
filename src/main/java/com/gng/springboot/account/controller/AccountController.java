@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/account")
 @RestController
 public class AccountController {
-	private final AccountService accountService;
+	private final AccountService accountServiceImpl;
 	private final EmailConfirmService emailConfirmServiceImpl;
 	
 	@ApiOperation(
@@ -48,7 +48,7 @@ public class AccountController {
 			) {
 		log.info("Register account [{}]", accountRegisterDto);
 		
-		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountService.accountRegister(accountRegisterDto));
+		ResponseDto<String> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_REGISTER_SUCCESS, accountServiceImpl.accountRegister(accountRegisterDto));
 
 		// Send confirmation mail
 		emailConfirmServiceImpl.sendEmailConfirmToken(accountRegisterDto.getId());
@@ -67,7 +67,7 @@ public class AccountController {
 			) {
 		log.info("Login account [{}]", accountLoginDto);
 
-		ResponseDto<AccountLoginDto> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_LOGIN_SUCCESS, accountService.accountLogin(accountLoginDto));
+		ResponseDto<AccountLoginDto> responseDto = new ResponseDto<>(ResponseCode.ACCOUNT_LOGIN_SUCCESS, accountServiceImpl.accountLogin(accountLoginDto));
 
 		return ResponseEntity.status(responseDto.getHttpStatus())
 				.body(responseDto);
