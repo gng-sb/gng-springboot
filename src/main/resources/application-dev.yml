@@ -73,3 +73,4 @@ jwt:
   refresh:
     password: ENC(M1G9NRqgFLIwnPdNLZ9RqIJI6LSK6ezvYEJD9Ln343A=)
     valid-time: 604800
+

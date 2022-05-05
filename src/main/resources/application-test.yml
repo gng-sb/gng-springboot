@@ -94,5 +94,3 @@ jwt:
   refresh:
     password: testrefreshpwd
     valid-time: 604800
-
-      

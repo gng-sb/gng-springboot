@@ -1,4 +1,4 @@
-package com.gng.springboot.commons.controller;
+package com.gng.springboot.commons.base;
 
 import java.nio.charset.StandardCharsets;
 

@@ -1,50 +1,38 @@
 package com.gng.springboot.account;
 
 
-import org.junit.jupiter.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.TestPropertySource;
 
 import com.gng.springboot.account.model.AccountEntity;
 import com.gng.springboot.account.model.AccountRegisterDto;
 import com.gng.springboot.account.repository.AccountRepository;
-import com.gng.springboot.account.service.AccountService;
-import com.gng.springboot.email.service.EmailConfirmService;
+import com.gng.springboot.account.service.AccountServiceImpl;
+import com.gng.springboot.commons.base.BaseServiceTest;
 import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.jwt.repository.AccountRefreshRepository;
-import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration;
 
 /**
  * Account service test
  * @author gchyoo
  *
  */
-@TestPropertySource(locations = "classpath:application.yml")
-@Import(value = {EnableEncryptablePropertiesConfiguration.class})
-@ExtendWith(MockitoExtension.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Embedded DB 사용하지 않음
-@DataJpaTest // JPA 테스트
 @DisplayName("AccountService 테스트")
-public class AccountServiceTest {
+public class AccountServiceTest extends BaseServiceTest {
 	
-	@InjectMocks // Mock을 주입할 대상 객체
-	private AccountService accountService;
-	
-	@Mock // InjectMocks에 주입할 객체
-	private AccountRepository accountRepository;
+	@InjectMocks // Mock을 주입할 객체
+	private AccountServiceImpl accountServiceImpl;
 	
 	@Mock
-	private EmailConfirmService emailConfirmServiceImpl;
+	private AccountRepository accountRepository;
 	
 	@Mock
 	private PasswordEncoder passwordEncoder;
@@ -61,15 +49,15 @@ public class AccountServiceTest {
 		// Given
 		final AccountEntity accountEntity = createAccountEntity();
 		final AccountRegisterDto accountRegisterDto = createAccountRegisterDto();
-		Mockito.lenient() // 필요한 setUp이므로 lenient를 설정하여 예외 방지
-				.when(accountRepository.save(accountEntity))
-				.thenReturn(accountEntity);
+
+		BDDMockito.given(accountRepository.save(accountEntity))
+				.willReturn(accountEntity);
 		
 		// When
-		String id = accountService.accountRegister(accountRegisterDto);
+		String id = accountServiceImpl.accountRegister(accountRegisterDto);
 		
 		// Then
-		Assertions.assertTrue(accountRegisterDto.getId().equals(id));
+		assertThat(id).isEqualTo(accountRegisterDto.getId());
 	}
 	
 	@DisplayName("AccountController 계정 인증 완료 테스트")
@@ -78,15 +66,18 @@ public class AccountServiceTest {
 		// Given
 		final AccountEntity accountEntity = createAccountEntity();
 		final AccountRegisterDto accountRegisterDto = createAccountRegisterDto();
-		Mockito.lenient() // 필요한 setUp이므로 lenient를 설정하여 예외 방지
-				.when(accountRepository.save(accountEntity))
-				.thenReturn(accountEntity);
+
+		
+		BDDMockito.given(accountRepository.save(accountEntity))
+				.willReturn(accountEntity);
+		BDDMockito.given(accountRepository.findById(accountEntity.getId()))
+				.willReturn(Optional.of(accountEntity));
 		
 		// When
-		boolean success = accountService.accountConfirm(accountRegisterDto.getId());
+		boolean success = accountServiceImpl.accountConfirm(accountRegisterDto.getId());
 		
 		// Then
-		Assertions.assertTrue(success);
+		assertThat(success).isTrue();
 	}
 	
 	public AccountRegisterDto createAccountRegisterDto() {
@@ -98,10 +89,12 @@ public class AccountServiceTest {
 	}
 	
 	public AccountEntity createAccountEntity() {
-		return AccountEntity.builder()
+		AccountEntity accountEntity = AccountEntity.builder()
 				.id("testId@test.com")
 				.name("testName")
 				.pwd(passwordEncoder.encode("testPwd1!"))
 				.build();
+		
+		return accountEntity;
 	}
 }
