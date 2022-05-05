@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gng.springboot.commons.constant.Constants;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,16 +30,16 @@ import lombok.ToString;
 @ToString(exclude = "pwd")
 @Component
 public class AccountRegisterDto {
-	@ApiParam(value = "로그인 ID")
+	@ApiModelProperty(value = "로그인 ID")
 	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
 	private String id;
 
-	@ApiParam(value = "로그인 PW")
+	@ApiModelProperty(value = "로그인 PW")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Pattern(regexp = Constants.REGEXP_PW, message = Constants.VALIDATE_ACCOUNT_PW_PATTERN)
 	private String pwd;
 
-	@ApiParam(value = "이름")
+	@ApiModelProperty(value = "이름")
 	@Size(min = 2, max = 20, message = Constants.VALIDATE_ACCOUNT_NAME_SIZE)
 	private String name;
 }

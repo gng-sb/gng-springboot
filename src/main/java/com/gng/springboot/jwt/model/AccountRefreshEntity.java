@@ -11,7 +11,6 @@ import javax.persistence.Table;
 
 import com.gng.springboot.commons.model.BaseEntity;
 
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,22 +38,17 @@ public class AccountRefreshEntity extends BaseEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "gng_account_refresh_token_id")
-	@ApiParam(value = "gng_account_refresh_tokens 테이블 ID")
 	private Long gngAccountRefreshTokenId;
 	
 	@Column(name = "gng_account_id")
-	@ApiParam(value = "gng_accounts ID")
 	private Long gngAccountId;
 	
 	@Column(name = "uuid")
-	@ApiParam(value = "Refresh token UUID")
 	private String uuid;
 	
 	@Column(name = "access_token", columnDefinition = "TEXT")
-	@ApiParam(value = "Access token")
 	private String accessToken;
 	
 	@Column(name = "refresh_token", columnDefinition = "TEXT")
-	@ApiParam(value = "Refresh token")
 	private String refreshToken;
 }

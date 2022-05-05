@@ -26,7 +26,6 @@ import com.gng.springboot.commons.constant.Constants.AccountStatusTypes;
 import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.model.BaseEntity;
 
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -56,24 +55,19 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "gng_account_id")
-	@ApiParam(value = "gng_accounts 테이블 ID")
 	private Long gngAccountId;
 	
 	@Column(name = "id")
-	@ApiParam(value = "로그인 ID")
 	private String id;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "pwd")
-	@ApiParam(value = "로그인 PW")
 	private String pwd;
 	
 	@Column(name = "name")
-	@ApiParam(value = "이름")
 	private String name;
 	
 	@Column(name = "status", columnDefinition = "BIT", length=1)
-	@ApiParam(value = "계정 활성화 여부")
 	private int status;
 
 	@Builder.Default // Default value to new HashSet

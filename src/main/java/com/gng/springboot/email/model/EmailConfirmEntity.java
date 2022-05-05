@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.gng.springboot.commons.model.BaseEntity;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,22 +39,22 @@ public class EmailConfirmEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -585266495686927898L;
 
 	@Column(name = "id")
-	@ApiParam(value = "로그인 ID")
+	@ApiModelProperty(value = "로그인 ID")
 	private String id;
 
 	@Id
 	@GeneratedValue(generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	@Column(name = "uuid")
-	@ApiParam(value = "토큰 UUID")
+	@ApiModelProperty(value = "토큰 UUID")
 	private String uuid;
 	
 	@Column(name = "expired", columnDefinition = "TINYINT")
-	@ApiParam(value = "만료 여부")
+	@ApiModelProperty(value = "만료 여부")
 	private boolean expired;
 	
 	@Column(name = "expired_at")
-	@ApiParam(value = "만료 시각")
+	@ApiModelProperty(value = "만료 시각")
 	private LocalDateTime expiredAt;
 	
 	/**

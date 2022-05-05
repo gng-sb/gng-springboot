@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import com.gng.springboot.commons.constant.Constants.RoleTypes;
 import com.gng.springboot.commons.model.BaseEntity;
 
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,14 +39,11 @@ public class AccountRoleEntity extends BaseEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "gng_account_role_id")
-	@ApiParam(value = "gng_account_roles 테이블 ID")
 	private Long gngAccountRoleId;
 	
 	@Column(name = "gng_account_id")
-	@ApiParam(value = "gng_accounts 테이블 ID")
 	private Long gngAccountId;
 	
 	@Column(name = "role_type", columnDefinition = "VARCHAR")
-	@ApiParam(value = "사용자 권한")
 	private RoleTypes roleType;
 }

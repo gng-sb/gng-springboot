@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.gng.springboot.commons.constant.Constants;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,16 +29,16 @@ import lombok.ToString;
 public class JwtRefreshDto {
 
 	@NotBlank(message = Constants.VALIDATE_ACCOUNT_ID_BLANK)
-	@ApiParam(value = "로그인 ID")
+	@ApiModelProperty(value = "로그인 ID")
 	private String id;
 
 	@NotBlank(message = Constants.JWT_ACCESS_TOKEN_EMPTY)
 	@Transient
-	@ApiParam(value = "Access token")
+	@ApiModelProperty(value = "Access token")
 	private String accessToken;
 
 	@NotBlank(message = Constants.JWT_REFRESH_TOKEN_EMPTY)
 	@Transient
-	@ApiParam(value = "Refresh token")
+	@ApiModelProperty(value = "Refresh token")
 	private String refreshToken;
 }

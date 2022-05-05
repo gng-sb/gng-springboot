@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gng.springboot.commons.constant.Constants;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,23 +32,23 @@ import lombok.ToString;
 @Component
 public class AccountLoginDto {
 	@Email(regexp = Constants.REGEXP_EMAIL, message = Constants.VALIDATE_ACCOUNT_ID_EMAIL)
-	@ApiParam(value = "로그인 ID")
+	@ApiModelProperty(value = "로그인 ID")
 	private String id;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@NotBlank(message = Constants.VALIDATE_ACCOUNT_PW_BLANK)
-	@ApiParam(value = "로그인 PW")
+	@ApiModelProperty(value = "로그인 PW")
 	private String pwd;
 	
-	@ApiParam(value = "이름")
+	@ApiModelProperty(value = "이름")
 	private String name;
 
 	@Transient
-	@ApiParam(value = "Access token")
+	@ApiModelProperty(value = "Access token")
 	protected String accessToken;
 
 	@Transient
-	@ApiParam(value = "Refresh token")
+	@ApiModelProperty(value = "Refresh token")
 	protected String refreshToken;
 	
 	private AccountLoginDto(AccountEntity accountEntity, String accessToken, String refreshToken) {
