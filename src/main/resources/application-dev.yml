@@ -33,20 +33,27 @@ logging:
     name: logs/gng-springboot.log
   level:
     root: debug
-    '[org.springframework.web]': info
+    '[32mjavax.activation]': warn
+    '[com.sun.mail.smtp]': warn
     '[com.zaxxer.hikari]': warn
-    '[sun.rmi]': warn
-    '[org.apache]': warn
-    '[org.hibernate.hql.internal]': warn
     '[javax.activation]': warn
     '[javax.mail]': warn
     '[javax.management.remote.rmi]': warn
     '[jdk.event.security]': warn
-    '[com.sun.mail.smtp]': warn
-    '[32mjavax.activation]': warn
+    '[org.apache]': warn
+    '[org.hibernate.boot]': info
+    '[org.hibernate.cfg]': info
+    '[org.hibernate.hql.internal]': warn
+    '[org.hibernate.engine]': info
+    '[org.hibernate.id]': info
+    '[org.hibernate.loader]': info
+    '[org.hibernate.persister]': info
+    '[org.hibernate.type]': info
     '[org.hibernate.type.descriptor.sql]': trace
-    
-  
+    '[org.hibernate.validator]': info
+    '[org.springframework]': info
+    '[springfox]': info
+    '[sun.rmi]': warn
   pattern:
     console: "[%d{yyyy-MM-dd HH:mm:ss}][%highlight(%-5level)][%magenta(%-12.12thread)][%green(%-37logger{36})][%cyan(%method:%line)] - %msg%n"
     file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-4relative][%thread][%-37logger{36}] - %msg%n"
