@@ -1,11 +1,19 @@
 > # gng-springboot(Backend)
 
+- ## Server info
+```
+API server URL  : <domain>:<port>/gngsb
+Swagger URL     : <domain>:<port>/gngsb/swagger-ui/index.html
+Web server URL  : <domain>:<port>/gng
+```
+
 - ## Tech stack
 ```
 - Java 8
 - Spring boot
 - Spring security
 - Spring data JPA / hibernate
+- Swagger2
 - Gradle
 - MySQL
 - JWT
@@ -32,7 +40,6 @@ https://themeforest.net/item/emilus-react-admin-template/28400277
 
 > # TODO list
 ```
-- Swagger
 - Apache Kafka/Redis
 - Elasticsearch
 - Jenkins/Portainer
