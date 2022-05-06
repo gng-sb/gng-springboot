@@ -23,7 +23,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.yaml.snakeyaml.constructor.BaseConstructor;
 
+import com.gng.springboot.commons.base.BaseControllerTest;
 import com.gng.springboot.commons.constant.Constants;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
@@ -42,16 +44,8 @@ import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropert
  * @author gchyoo
  *
  */
-@TestPropertySource(locations = "classpath:application.yml")
-@Import(value = {EnableEncryptablePropertiesConfiguration.class})
-@WebMvcTest(JwtController.class) // 테스트할 컨트롤러 클래스명
-@MockBean(classes = {
-		JwtTokenProvider.class, JwtService.class, 
-		JwtTokenProviderService.class, AccountRefreshRepository.class})
-@ExtendWith(MockitoExtension.class)
 @DisplayName("JwtController 테스트")
-public class JwtControllerTest {
-	private MockMvc mockMvc;
+public class JwtControllerTest extends BaseControllerTest {
 	
 	@MockBean
 	private JwtService jwtService;
