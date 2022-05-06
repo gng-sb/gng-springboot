@@ -7,15 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,21 +17,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import org.yaml.snakeyaml.constructor.BaseConstructor;
 
 import com.gng.springboot.commons.base.BaseControllerTest;
 import com.gng.springboot.commons.constant.Constants;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.exception.custom.BusinessException;
 import com.gng.springboot.commons.exception.handler.RestAPIExceptionHandler;
-import com.gng.springboot.jwt.component.JwtTokenProvider;
 import com.gng.springboot.jwt.controller.JwtController;
 import com.gng.springboot.jwt.model.JwtRefreshDto;
-import com.gng.springboot.jwt.repository.AccountRefreshRepository;
 import com.gng.springboot.jwt.service.JwtService;
-import com.gng.springboot.jwt.service.JwtTokenProviderService;
 import com.google.gson.Gson;
-import com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration;
 
 /**
  * JWT controller test
