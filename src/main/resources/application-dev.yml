@@ -15,6 +15,9 @@ spring:
     password: ENC(m67bWfsGzUfM+noexMZrlSQujV2HIM07aACeljS+QK85LpHZhHZg7A==)
 
 mail:
+  host: localhost
+  # ENC(WCwNUld0F1m6fCKejbhilowqDAhLYnyemsr0WdxVj/s=)
+  port: 3000
   token:
     valid-time: 5
 
