@@ -4,7 +4,7 @@
 ```
 API server URL  : http://221.148.164.48/gngsb
 Swagger URL     : http://221.148.164.48/gngsb/swagger-ui/index.html
-Web server URL  : http://221.148.164.48:3030/gng/app/home
+Web server URL  : http://221.148.164.48:3030/gng
 ```
 
 - ## Tech stack
