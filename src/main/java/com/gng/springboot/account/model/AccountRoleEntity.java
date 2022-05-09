@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,6 +46,7 @@ public class AccountRoleEntity extends BaseEntity implements Serializable {
 	@Column(name = "gng_account_id")
 	private Long gngAccountId;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "role_type", columnDefinition = "VARCHAR")
 	private RoleTypes roleType;
 }
