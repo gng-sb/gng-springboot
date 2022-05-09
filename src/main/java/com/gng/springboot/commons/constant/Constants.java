@@ -67,22 +67,11 @@ public class Constants {
 	@Getter
 	@AllArgsConstructor
 	public enum AccountStatusTypes {
-		USE(1, "활성화"),
-		NOT_AUTHORIZED(0, "비활성화"),
-		BLOCKED(-1, "정지");
+		USE("활성화"),
+		NOT_AUTHORIZED("비활성화"),
+		BLOCKED("정지");
 		
-		private int status;
 		private String description;
-		
-		public static AccountStatusTypes getAccountStatusType(int accountStatus) {
-			for(AccountStatusTypes accountStatusType : AccountStatusTypes.values()) {
-				if(accountStatus == accountStatusType.getStatus()) {
-					return accountStatusType;
-				}
-			}
-			
-			return null;
-		}
 	}
 	
 }

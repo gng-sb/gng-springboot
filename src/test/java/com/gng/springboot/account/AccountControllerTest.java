@@ -101,6 +101,35 @@ public class AccountControllerTest extends BaseControllerTest {
 		}
 
 		@Test
+		@DisplayName("중복된 아이디")
+		public void conflict() throws Exception {
+			// Given
+			final AccountRegisterDto accountRegisterDto = AccountRegisterDto.builder()
+					.id(id)
+					.name(name)
+					.pwd(pwd)
+					.build();
+			AccountEntity accountEntity = modelMapper.map(accountRegisterDto, AccountEntity.class);
+			accountEntity.setPwd(passwordEncoder.encode(pwd));
+			accountEntity.setStatus(AccountStatusTypes.USE);
+			
+			accountRepository.save(accountEntity);
+			
+			// When
+			final ResultActions resultActions = mockMvc.perform(getRequest(uri).content(toJson(accountRegisterDto)));
+			
+			// Then
+			resultActions
+					.andDo(print()) // 응답 출력
+					.andExpect(status().isConflict())
+					.andExpect(jsonPath("$.httpStatus").value(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT.getHttpStatus().name()))
+					.andExpect(jsonPath("$.messages").value(Matchers.containsInAnyOrder(
+							ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT.getMessage()
+							)))
+					.andExpect(jsonPath("$.success").value(false));
+		}
+		
+		@Test
 		@DisplayName("잘못된 입력값")
 		public void badRequest() throws Exception {
 			// Given
@@ -143,7 +172,7 @@ public class AccountControllerTest extends BaseControllerTest {
 			
 			final AccountEntity accountEntity = modelMapper.map(accountLoginDto, AccountEntity.class);
 			accountEntity.setGngAccountId(1L);
-			accountEntity.setStatus(AccountStatusTypes.USE.getStatus());
+			accountEntity.setStatus(AccountStatusTypes.USE);
 			accountEntity.setPwd(passwordEncoder.encode(pwd));
 			
 			accountRepository.save(accountEntity);

@@ -49,14 +49,11 @@ public class AccountServiceImpl implements AccountService {
 				.id(accountRegisterDto.getId())
 				.pwd(passwordEncoder.encode(accountRegisterDto.getPwd()))
 				.name(accountRegisterDto.getName())
-				.status(AccountStatusTypes.NOT_AUTHORIZED.getStatus())
+				.status(AccountStatusTypes.NOT_AUTHORIZED)
 				.build();
 		
 		// Add role type(ROLE_USER)
 		accountEntity.addRoleType(RoleTypes.ROLE_USER);
-		
-		// Get account data with id and check conflict
-		
 		
 		// Insert registration data if not exist
 		if(!checkAccountExist(accountEntity.getId(), accountRegisterDto.getPwd())) {
@@ -72,12 +69,13 @@ public class AccountServiceImpl implements AccountService {
 	 * @return
 	 */
 	public boolean checkAccountExist(String id, String currentPwd) {
+		// Get account data with id and check conflict
 		Optional<AccountEntity> prevAccountEntityOptional = accountRepository.findById(id);
 		
 		// Account conflict exceptions
 		if(prevAccountEntityOptional != null) {
 			prevAccountEntityOptional.ifPresent(account -> {
-				if(account.getAccountStatus().equals(AccountStatusTypes.USE)) {
+				if(account.getStatus().equals(AccountStatusTypes.USE)) {
 					// Do not send confirmation mail if account is already authorized
 					throw new BusinessException(ResponseCode.ACCOUNT_REGISTER_ID_CONFLICT);
 				} else if(!passwordEncoder.matches(currentPwd, account.getPwd())) {
@@ -101,7 +99,7 @@ public class AccountServiceImpl implements AccountService {
 				.orElseThrow(() -> new BusinessException(ResponseCode.ACCOUNT_NOT_FOUND));
 		
 		// Set account status to 'USE'
-		accountEntity.setAccountStatus(AccountStatusTypes.USE);
+		accountEntity.setStatus(AccountStatusTypes.USE);
 		
 		// Update account status
 		accountRepository.save(accountEntity);
@@ -126,11 +124,11 @@ public class AccountServiceImpl implements AccountService {
 		}
 		
 		// Check user status
-		if(accountEntity.getAccountStatus().equals(AccountStatusTypes.NOT_AUTHORIZED)) {
+		if(accountEntity.getStatus().equals(AccountStatusTypes.NOT_AUTHORIZED)) {
 			emailConfirmServiceImpl.sendEmailConfirmToken(accountEntity.getId());
 			
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_NOT_AUTHORIZED);
-		} else if(accountEntity.getAccountStatus().equals(AccountStatusTypes.BLOCKED)) {
+		} else if(accountEntity.getStatus().equals(AccountStatusTypes.BLOCKED)) {
 			throw new BusinessException(ResponseCode.ACCOUNT_LOGIN_BLOCKED);
 		}
 		
