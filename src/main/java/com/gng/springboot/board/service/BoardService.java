@@ -14,13 +14,13 @@ import com.gng.springboot.board.model.BoardEntity;
 
 public interface BoardService {
 	 
-	public BoardDto createBoard(BoardDto boardDto);
+	public BoardEntity createBoard(BoardEntity boardEntity);
 	
 	public List<BoardEntity> searchAllBoard();
 	
 	public Optional<BoardEntity> searchBoard(Long id);
 	
-	public BoardDto updateBoard(Long id, BoardDto boardDto);
+	public BoardEntity updateBoard(Long id, BoardEntity boardEntity);
 	
 	public void deleteBoard(Long id);
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.gng.springboot.board.model.BoardDto;
 import com.gng.springboot.board.model.BoardEntity;
 import com.gng.springboot.board.repository.BoardRepository;
 
@@ -23,8 +22,10 @@ public class BoardServiceImpl implements BoardService {
 	private final BoardRepository boardRepository;
 	
 	@Override
-	public BoardDto createBoard(BoardDto boardDto) {
-		return boardRepository.save(boardDto);
+	public BoardEntity createBoard(BoardEntity boardEntity) {
+		
+		
+		return boardRepository.save(boardEntity);
 	}
 
 	@Override
@@ -39,10 +40,10 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public BoardDto updateBoard(Long id, BoardDto boardDto) {
+	public BoardEntity updateBoard(Long id, BoardEntity boardEntity) {
 		
-		boardDto.setGngBoardId(id);
-		return boardRepository.save(boardDto);
+		boardEntity.setGngBoardId(id);
+		return boardRepository.save(boardEntity);
 	}
 
 	@Override
