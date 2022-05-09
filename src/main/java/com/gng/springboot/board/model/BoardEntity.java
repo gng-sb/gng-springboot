@@ -29,20 +29,16 @@ import lombok.Setter;
 @Table(name = "gng_boards")
 public class BoardEntity {
 	@Id
-	@ApiModelProperty(value = "gng_board 테이블 ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "gng_board_id")
 	private Long gngBoardId;
 	
-	@ApiModelProperty(value = "로그인 ID")
 	@Column(name = "gng_account_id")
 	private String gngAccountId;
 	
-	@ApiModelProperty(value = "게시글 제목")
 	@Column(name = "board_name")
 	private String boardName;
 	
-	@ApiModelProperty(value = "게시글 내용")
 	@Column(name = "board_data", columnDefinition = "LONGTEXT")
 	private String boardData;
 	

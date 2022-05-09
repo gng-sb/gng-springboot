@@ -3,6 +3,10 @@ package com.gng.springboot.board.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gng.springboot.account.model.AccountLoginDto;
 import com.gng.springboot.board.model.BoardEntity;
 import com.gng.springboot.board.service.BoardService;
+import com.gng.springboot.commons.model.ResponseDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Board controller
@@ -25,13 +32,12 @@ import lombok.RequiredArgsConstructor;
  *
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/board")
 @RestController
 public class BoardController {
 	private final BoardService boardService;
-	
-	// 브랜치 테스트용 커밋
 	
 	// 페이징 개수 - 20개 단위
 	// 페이징 https://devlog-wjdrbs96.tistory.com/414
@@ -53,9 +59,19 @@ public class BoardController {
 		return boardService.searchBoard(id);
 	}
 	
+	@PostMapping(value = "/create", produces = {MediaTypes.HAL_JSON_VALUE})
+	public ResponseEntity<ResponseDto<BoardEntity>> createBoard2(
+			@Valid @RequestBody(required = true) AccountLoginDto accountLoginDto
+			){
+//		ResponseDto<BoardDto> responseDto = new ResponseDto<>(ResponseCode)
+		
+		return null;
+		
+	}
+	
 	@PostMapping("")
 	public BoardEntity createBoard(@RequestBody BoardEntity boardEntity) {
-		return boardService.createBoard(boardEntity);	
+		return boardService.createBoard(boardEntity);
 	}
 	
 	@PostMapping("/{id}")
