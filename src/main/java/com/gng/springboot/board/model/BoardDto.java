@@ -1,12 +1,5 @@
 package com.gng.springboot.board.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +12,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "gng_boards")
-@Table(name = "gng_boards")
 public class BoardDto {
 	@ApiModelProperty(value = "gng_board 테이블 ID")
 	private Long gngBoardId;

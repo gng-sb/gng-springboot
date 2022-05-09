@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gng.springboot.account.model.AccountLoginDto;
+import com.gng.springboot.board.model.BoardDto;
 import com.gng.springboot.board.model.BoardEntity;
-import com.gng.springboot.board.service.BoardService;
+import com.gng.springboot.board.service.BoardServiceImpl;
 import com.gng.springboot.commons.model.ResponseDto;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/board")
 @RestController
 public class BoardController {
-	private final BoardService boardService;
-	
+	private final BoardServiceImpl boardServiceImpl;
 	// 페이징 개수 - 20개 단위
 	// 페이징 https://devlog-wjdrbs96.tistory.com/414
 	// selectBoard(Pageable pageable)							(BODY 없음) 페이지 최초 가져오기	: GET /board
@@ -51,38 +50,38 @@ public class BoardController {
 	
 	@GetMapping("")
 	public List<BoardEntity> searchAllBoard() {
-		return boardService.searchAllBoard();
+		return boardServiceImpl.searchAllBoard();
 	}
 	
 	@GetMapping("/{id}")
 	public Optional<BoardEntity> searchBoard(@PathVariable Long id) {
-		return boardService.searchBoard(id);
+		return boardServiceImpl.searchBoard(id);
 	}
 	
-	@PostMapping(value = "/create", produces = {MediaTypes.HAL_JSON_VALUE})
-	public ResponseEntity<ResponseDto<BoardEntity>> createBoard2(
-			@Valid @RequestBody(required = true) AccountLoginDto accountLoginDto
+	@PostMapping(value = "", produces = {MediaTypes.HAL_JSON_VALUE})
+	public ResponseEntity<ResponseDto<BoardDto>> createBoard2(
+			@Valid @RequestBody(required = true) BoardDto boardDto
 			){
-//		ResponseDto<BoardDto> responseDto = new ResponseDto<>(ResponseCode)
+		ResponseDto<BoardDto> responseDto = new ResponseDto<>(null, boardServiceImpl.createBoard(boardDto));
 		
-		return null;
+		return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
 		
 	}
 	
-	@PostMapping("")
-	public BoardEntity createBoard(@RequestBody BoardEntity boardEntity) {
-		return boardService.createBoard(boardEntity);
-	}
+//	@PostMapping("")
+//	public BoardEntity createBoard(@RequestBody BoardDto boardDto) {
+//		return boardServiceImpl.createBoard(boardDto);
+//	}
 	
 	@PostMapping("/{id}")
-	public BoardEntity updateBoard(
+	public BoardDto updateBoard(
 			@PathVariable Long id, 
-			@RequestBody BoardEntity boardEntity) {
-		return boardService.updateBoard(id, boardEntity);
+			@RequestBody BoardDto boardDto) {
+		return boardServiceImpl.updateBoard(id, boardDto);
 	}
 	
 	@DeleteMapping("/{id}")
 	public void deleteBoard(@PathVariable Long id) {
-		boardService.deleteBoard(id);
+		boardServiceImpl.deleteBoard(id);
 	}
 }

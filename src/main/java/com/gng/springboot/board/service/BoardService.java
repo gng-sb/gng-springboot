@@ -3,6 +3,7 @@ package com.gng.springboot.board.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.gng.springboot.board.model.BoardDto;
 import com.gng.springboot.board.model.BoardEntity;
 
 /**
@@ -13,13 +14,13 @@ import com.gng.springboot.board.model.BoardEntity;
 
 public interface BoardService {
 	 
-	public BoardEntity createBoard(BoardEntity boardEntity);
+	public BoardDto createBoard(BoardDto boardDto);
 	
 	public List<BoardEntity> searchAllBoard();
 	
 	public Optional<BoardEntity> searchBoard(Long id);
 	
-	public BoardEntity updateBoard(Long id, BoardEntity boardEntity);
+	public BoardDto updateBoard(Long id, BoardDto boardDto);
 	
 	public void deleteBoard(Long id);
 }
