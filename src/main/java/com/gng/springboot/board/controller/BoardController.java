@@ -15,7 +15,6 @@ import com.gng.springboot.board.model.BoardEntity;
 import com.gng.springboot.board.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Board controller
@@ -26,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/board")
 @RestController
