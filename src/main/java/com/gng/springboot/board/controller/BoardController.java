@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gng.springboot.board.model.BoardDto;
 import com.gng.springboot.board.model.BoardEntity;
 import com.gng.springboot.board.service.BoardServiceImpl;
+import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.model.ResponseDto;
 
 import lombok.RequiredArgsConstructor;
@@ -59,13 +59,12 @@ public class BoardController {
 	}
 	
 	@PostMapping(value = "", produces = {MediaTypes.HAL_JSON_VALUE})
-	public ResponseEntity<ResponseDto<BoardDto>> createBoard2(
-			@Valid @RequestBody(required = true) BoardDto boardDto
+	public ResponseEntity<ResponseDto<BoardEntity>> createBoard(
+			@Valid @RequestBody(required = true) BoardEntity boardEntity
 			){
-		ResponseDto<BoardDto> responseDto = new ResponseDto<>(null, boardServiceImpl.createBoard(boardDto));
+		ResponseDto<BoardEntity> responseDto = new ResponseDto<>(ResponseCode.BOARD_CREATE_SUCCESS, boardServiceImpl.createBoard(boardEntity));
 		
 		return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
-		
 	}
 	
 //	@PostMapping("")
@@ -74,10 +73,10 @@ public class BoardController {
 //	}
 	
 	@PostMapping("/{id}")
-	public BoardDto updateBoard(
+	public BoardEntity updateBoard(
 			@PathVariable Long id, 
-			@RequestBody BoardDto boardDto) {
-		return boardServiceImpl.updateBoard(id, boardDto);
+			@RequestBody BoardEntity boardEntity) {
+		return boardServiceImpl.updateBoard(id, boardEntity);
 	}
 	
 	@DeleteMapping("/{id}")
