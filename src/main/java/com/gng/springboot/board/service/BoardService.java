@@ -3,43 +3,26 @@ package com.gng.springboot.board.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
+import com.gng.springboot.board.model.BoardDto;
 import com.gng.springboot.board.model.BoardEntity;
-import com.gng.springboot.board.repository.BoardRepository;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * Board service
  * @author "hyunmo.gu"
  *
  */
-@RequiredArgsConstructor
-@Service
-public class BoardService {
-	private final BoardRepository boardRepository;
+
+public interface BoardService {
 	 
-	public BoardEntity createBoard(BoardEntity boardEntity) {
-		return boardRepository.save(boardEntity);
-	}
+	public BoardEntity createBoard(BoardEntity boardEntity);
 	
-	public List<BoardEntity> searchAllBoard() {
-		return boardRepository.findAll();
-	}
+	public List<BoardEntity> searchAllBoard();
 	
-	public Optional<BoardEntity> searchBoard(Long id) {
-		return boardRepository.findById(id);
-	}
+	public Optional<BoardEntity> searchBoard(Long id);
 	
-	public BoardEntity updateBoard(Long id, BoardEntity boardEntity) {
-		boardEntity.setGngBoardId(id);
-		return boardRepository.save(boardEntity);
-	}
+	public BoardEntity updateBoard(Long id, BoardEntity boardEntity);
 	
-	public void deleteBoard(Long id) {
-		boardRepository.deleteById(id);
-	}
+	public void deleteBoard(Long id);
 }
 
 
