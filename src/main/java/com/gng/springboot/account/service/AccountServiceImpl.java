@@ -71,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
 	public boolean checkAccountExist(String id, String currentPwd) {
 		// Get account data with id and check conflict
 		Optional<AccountEntity> prevAccountEntityOptional = accountRepository.findById(id);
-		
+		System.out.println("AAA :  "+ prevAccountEntityOptional);
 		// Account conflict exceptions
 		if(prevAccountEntityOptional != null) {
 			prevAccountEntityOptional.ifPresent(account -> {
