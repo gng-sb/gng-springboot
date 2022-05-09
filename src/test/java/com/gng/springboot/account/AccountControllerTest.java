@@ -5,12 +5,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,6 +89,12 @@ public class AccountControllerTest extends BaseControllerTest {
 			EmailConfirmEntity emailConfirmEntity = EmailConfirmEntity.createEmailConfirmToken(id, 5000L);
 			emailConfirmRepository.save(emailConfirmEntity);
 			
+			Optional<AccountEntity> optionalAccountEntity = accountRepository.findById(id);
+			
+			if(optionalAccountEntity.isPresent()) {
+				accountRepository.delete(optionalAccountEntity.get());
+			}
+			
 			// When
 			final ResultActions resultActions = mockMvc.perform(getRequest(uri).content(toJson(accountRegisterDto)));
 			
@@ -109,10 +117,17 @@ public class AccountControllerTest extends BaseControllerTest {
 					.name(name)
 					.pwd(pwd)
 					.build();
+			
+			Optional<AccountEntity> optionalAccountEntity = accountRepository.findById(id);
+			
+			if(optionalAccountEntity.isPresent()) {
+				accountRepository.delete(optionalAccountEntity.get());
+			}
+
 			AccountEntity accountEntity = modelMapper.map(accountRegisterDto, AccountEntity.class);
 			accountEntity.setPwd(passwordEncoder.encode(pwd));
 			accountEntity.setStatus(AccountStatusTypes.USE);
-			
+
 			accountRepository.save(accountEntity);
 			
 			// When
@@ -170,10 +185,7 @@ public class AccountControllerTest extends BaseControllerTest {
 					.pwd(pwd)
 					.build();
 			
-			final AccountEntity accountEntity = modelMapper.map(accountLoginDto, AccountEntity.class);
-			accountEntity.setGngAccountId(1L);
-			accountEntity.setStatus(AccountStatusTypes.USE);
-			accountEntity.setPwd(passwordEncoder.encode(pwd));
+			final AccountEntity accountEntity = createAccountEntity(accountLoginDto);
 			
 			accountRepository.save(accountEntity);
 			
@@ -199,9 +211,8 @@ public class AccountControllerTest extends BaseControllerTest {
 					.pwd(pwd)
 					.build();
 			
-			final AccountEntity accountEntity = modelMapper.map(accountLoginDto, AccountEntity.class);
-			accountEntity.setGngAccountId(1L);
-			accountEntity.setPwd(passwordEncoder.encode(pwd));
+			final AccountEntity accountEntity = createAccountEntity(accountLoginDto);
+			accountEntity.setStatus(AccountStatusTypes.NOT_AUTHORIZED);
 			
 			accountRepository.save(accountEntity);
 			
@@ -239,5 +250,14 @@ public class AccountControllerTest extends BaseControllerTest {
 							)))
 					.andExpect(jsonPath("$.success").value(false));
 		}
+	}
+	
+	public AccountEntity createAccountEntity(AccountLoginDto accountLoginDto) {
+		AccountEntity accountEntity = modelMapper.map(accountLoginDto, AccountEntity.class);
+		accountEntity.setGngAccountId(1L);
+		accountEntity.setStatus(AccountStatusTypes.USE);
+		accountEntity.setPwd(passwordEncoder.encode(pwd));
+		
+		return accountEntity;
 	}
 }
