@@ -10,6 +10,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -67,8 +69,9 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "status", columnDefinition = "BIT", length=1)
-	private int status;
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "status")
+	private AccountStatusTypes status;
 
 	@Builder.Default // Default value to new HashSet
 	@ElementCollection(fetch = FetchType.EAGER) // Immediate loading
@@ -81,14 +84,6 @@ public class AccountEntity extends BaseEntity implements UserDetails, Serializab
 	
 	public void addRoleType(RoleTypes roleType) {
 		this.roleTypeSet.add(roleType.name());
-	}
-	
-	public AccountStatusTypes getAccountStatus() {
-		return AccountStatusTypes.getAccountStatusType(this.status);
-	}
-	
-	public void setAccountStatus(AccountStatusTypes accountStatusType) {
-		this.status = accountStatusType.getStatus();
 	}
 	
 	@Override
