@@ -31,6 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
 	private final BoardService boardService;
 	
+	// 브랜치 테스트용 커밋
+	
 	// 페이징 개수 - 20개 단위
 	// 페이징 https://devlog-wjdrbs96.tistory.com/414
 	// selectBoard(Pageable pageable)							(BODY 없음) 페이지 최초 가져오기	: GET /board
