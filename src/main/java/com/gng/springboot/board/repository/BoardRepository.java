@@ -11,7 +11,4 @@ import com.gng.springboot.board.model.BoardEntity;
  */
 public interface BoardRepository extends JpaRepository<BoardEntity,Long>{
 
-	BoardDto save(BoardDto boardDto);
-	
-	
 }
