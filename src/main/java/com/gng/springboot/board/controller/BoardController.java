@@ -3,6 +3,10 @@ package com.gng.springboot.board.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gng.springboot.board.model.BoardEntity;
-import com.gng.springboot.board.service.BoardService;
+import com.gng.springboot.board.service.BoardServiceImpl;
+import com.gng.springboot.commons.constant.ResponseCode;
+import com.gng.springboot.commons.model.ResponseDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Board controller
@@ -25,12 +32,12 @@ import lombok.RequiredArgsConstructor;
  *
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/board")
 @RestController
 public class BoardController {
-	private final BoardService boardService;
-	
+	private final BoardServiceImpl boardServiceImpl;
 	// 페이징 개수 - 20개 단위
 	// 페이징 https://devlog-wjdrbs96.tistory.com/414
 	// selectBoard(Pageable pageable)							(BODY 없음) 페이지 최초 가져오기	: GET /board
@@ -43,28 +50,37 @@ public class BoardController {
 	
 	@GetMapping("")
 	public List<BoardEntity> searchAllBoard() {
-		return boardService.searchAllBoard();
+		return boardServiceImpl.searchAllBoard();
 	}
 	
 	@GetMapping("/{id}")
 	public Optional<BoardEntity> searchBoard(@PathVariable Long id) {
-		return boardService.searchBoard(id);
+		return boardServiceImpl.searchBoard(id);
 	}
 	
-	@PostMapping("")
-	public BoardEntity createBoard(@RequestBody BoardEntity boardEntity) {
-		return boardService.createBoard(boardEntity);	
+	@PostMapping(value = "", produces = {MediaTypes.HAL_JSON_VALUE})
+	public ResponseEntity<ResponseDto<BoardEntity>> createBoard(
+			@Valid @RequestBody(required = true) BoardEntity boardEntity
+			){
+		ResponseDto<BoardEntity> responseDto = new ResponseDto<>(ResponseCode.BOARD_CREATE_SUCCESS, boardServiceImpl.createBoard(boardEntity));
+		
+		return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
 	}
+	
+//	@PostMapping("")
+//	public BoardEntity createBoard(@RequestBody BoardDto boardDto) {
+//		return boardServiceImpl.createBoard(boardDto);
+//	}
 	
 	@PostMapping("/{id}")
 	public BoardEntity updateBoard(
 			@PathVariable Long id, 
 			@RequestBody BoardEntity boardEntity) {
-		return boardService.updateBoard(id, boardEntity);
+		return boardServiceImpl.updateBoard(id, boardEntity);
 	}
 	
 	@DeleteMapping("/{id}")
 	public void deleteBoard(@PathVariable Long id) {
-		boardService.deleteBoard(id);
+		boardServiceImpl.deleteBoard(id);
 	}
 }

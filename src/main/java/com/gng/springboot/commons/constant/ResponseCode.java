@@ -21,6 +21,7 @@ public enum ResponseCode {
 	SUCCESS(true, HttpStatus.OK, "성공하였습니다."),
 	ACCOUNT_REGISTER_SUCCESS(true, HttpStatus.CREATED, "사용자 아이디 생성에 성공하였습니다. 가입 시 사용한 이메일을 통해 계정 인증을 완료해주세요."),
 	ACCOUNT_LOGIN_SUCCESS(true, HttpStatus.OK, "로그인에 성공하였습니다."),
+	BOARD_CREATE_SUCCESS(true, HttpStatus.CREATED, "게시판 글 등록에 성공하였습니다."),
 	EMAIL_TOKEN_CONFIRM_SUCCESS(true, HttpStatus.OK, "이메일 인증에 성공하였습니다."),
 	JWT_REFRESH_SUCCESS(true, HttpStatus.OK, "JWT 토큰 재발급에 성공하였습니다."),
 	
