@@ -2,8 +2,8 @@
 
 - ## Server info
 ```
-API server URL  : <domain>:<port>/gngsb
-Swagger URL     : <domain>:<port>/gngsb/swagger-ui/index.html
+API server URL  : http://221.148.164.48/gngsb
+Swagger URL     : http://221.148.164.48/gngsb/swagger-ui/index.html
 Web server URL  : <domain>:<port>/gng
 ```
 
