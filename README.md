@@ -2,9 +2,8 @@
 
 - ## Server info
 ```
-API server URL  : http://221.148.164.48/gngsb
-Swagger URL     : http://221.148.164.48/gngsb/swagger-ui/index.html
-Web server URL  : http://221.148.164.48:3030/gng/app/home
+Swagger URL     : http://swagger-ui.gngsb.kro.kr
+Web server URL  : http://gngsb.kro.kr
 ```
 
 - ## Tech stack
