@@ -5,6 +5,9 @@ server:
   port: 8080
   servlet:
     context-path: /gngsb
+  error:
+    include-exception: false
+    include-stacktrace: never
 spring:
   profiles:
     active: ${spring.profiles.active}

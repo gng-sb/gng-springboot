@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Service
-public class JwtService {
+public class JwtService implements JwtServiceImpl {
 	
 	private final AccountRepository accountRepository;
 	private final AccountRefreshRepository accountRefreshRepository;

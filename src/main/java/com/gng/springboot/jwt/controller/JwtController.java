@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class JwtController {
 	
-	private final JwtService jwtService;
+	private final JwtService jwtServiceImpl;
 
 	@ApiOperation(
 			value = "JWT 재발급",
@@ -43,7 +43,7 @@ public class JwtController {
 			) {
 		log.info("Refresh JWT [{}]", jwtRefreshDto);
 		
-		ResponseDto<JwtRefreshDto> responseDto = new ResponseDto<>(ResponseCode.JWT_REFRESH_SUCCESS, jwtService.refreshToken(jwtRefreshDto));
+		ResponseDto<JwtRefreshDto> responseDto = new ResponseDto<>(ResponseCode.JWT_REFRESH_SUCCESS, jwtServiceImpl.refreshToken(jwtRefreshDto));
 		
 		return ResponseEntity.status(responseDto.getHttpStatus())
 				.body(responseDto);

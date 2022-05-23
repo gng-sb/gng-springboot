@@ -37,11 +37,11 @@ import com.google.gson.Gson;
 public class JwtControllerTest extends BaseControllerTest {
 	
 	@MockBean
-	private JwtService jwtService;
+	private JwtService jwtServiceImpl;
 	
 	@BeforeEach
 	public void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(new JwtController(jwtService))
+		mockMvc = MockMvcBuilders.standaloneSetup(new JwtController(jwtServiceImpl))
 				.setControllerAdvice(RestAPIExceptionHandler.class) // ControllerAdvice 클래스 추가
 				.addFilters(new CharacterEncodingFilter(StandardCharsets.UTF_8.toString(), true)) // UTF-8 필터 추가
 				.build();
@@ -65,7 +65,7 @@ public class JwtControllerTest extends BaseControllerTest {
 					.refreshToken("eyJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYmU0NDUzZjAtZjJiNy00M2JlLThlZDItMzg5ZDc4OGIzMTE4IiwiaWF0IjoxNjQ5OTI4NzIzLCJleHAiOjE2NTA1MzM1MjN9.WYFqPcV_vQklZgGen3VF3Y6Wlt6B6-on9sA5nMeGSag")
 					.build();
 					
-			BDDMockito.given(jwtService.refreshToken(jwtRefreshDto))
+			BDDMockito.given(jwtServiceImpl.refreshToken(jwtRefreshDto))
 					.willReturn(jwtRefreshDto);
 			
 			// When
@@ -90,7 +90,7 @@ public class JwtControllerTest extends BaseControllerTest {
 					.refreshToken("")
 					.build();
 					
-			BDDMockito.given(jwtService.refreshToken(jwtRefreshDto))
+			BDDMockito.given(jwtServiceImpl.refreshToken(jwtRefreshDto))
 					.willThrow(BusinessException.class);
 			
 			// When

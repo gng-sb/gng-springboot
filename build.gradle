@@ -86,6 +86,12 @@ dependencies {
 	testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+jar {
+	manifest {
+		attributes 'Main-class':'com.gng.springboot.GngSpringbootApplication'
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

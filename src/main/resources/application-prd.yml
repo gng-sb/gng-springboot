@@ -1,0 +1,78 @@
+# ==============================
+# Database configurations
+# ==============================
+spring:
+  datasource:
+    url: ENC(Gy2hW7Y9vVX1JnBQ8JhZBCkKjncuQKtkIZsc4h72dqeA7QeaCMDfoZvWkN1IMAE+axWpbFDJh/oBiysGNloK1QmJcekLdZw7ciEavSsKe5OFpEPpWDV3KxuDnKKljqg1TxaUxgNwxqk=)
+    username: ENC(nOK+URH2mcp9I5rujkWpKwYviaqHHnB3)
+    password: ENC(JbJvMEJZmMFT5IVaZUaoNDyzqqyy6vrjPNCbDOyoegw=)
+    
+# ==============================
+# Email configurations
+# ==============================
+  mail:
+    username: ENC(Ajt2vj7Oi+mZB6IC6uNAj4J6UvveTllKNXfb+9jAUYxW4zs1u61C3w==)
+    password: ENC(m67bWfsGzUfM+noexMZrlSQujV2HIM07aACeljS+QK85LpHZhHZg7A==)
+
+mail:
+  host: 221.148.164.48
+  port: 3030
+  token:
+    valid-time: 5
+
+# ==============================
+# Jasypt configurations
+# ==============================
+jasypt:
+  encryptor:
+    password: ${jasypt.encryptor.password}
+
+# ==============================
+# Logging configurations
+# ==============================
+logging:
+  file:
+    name: logs/gng-springboot.log
+  level:
+    root: debug
+    '[32mjavax.activation]': warn
+    '[com.sun.mail.smtp]': warn
+    '[com.zaxxer.hikari]': warn
+    '[javax.activation]': warn
+    '[javax.mail]': warn
+    '[javax.management.remote.rmi]': warn
+    '[jdk.event.security]': warn
+    '[org.apache]': warn
+    '[org.hibernate.boot]': info
+    '[org.hibernate.cfg]': info
+    '[org.hibernate.hql.internal]': warn
+    '[org.hibernate.engine]': info
+    '[org.hibernate.id]': info
+    '[org.hibernate.loader]': info
+    '[org.hibernate.persister]': info
+    '[org.hibernate.type]': info
+    '[org.hibernate.type.descriptor.sql]': trace
+    '[org.hibernate.validator]': info
+    '[org.springframework]': info
+    '[springfox]': info
+    '[sun.rmi]': warn
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss}][%highlight(%-5level)][%magenta(%-12.12thread)][%green(%-37logger{36})][%cyan(%method:%line)] - %msg%n"
+    file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-4relative][%thread][%-37logger{36}] - %msg%n"
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 7
+      file-name-pattern: "logs/backup/gng-springboot.log.%d{yyyy-MM-dd}-%i.zip"
+
+# ==============================
+# JWT configurations
+# ==============================
+jwt:
+  access:
+    password: ENC(M5FL+GNorGE3OmRoVsndLShoXyo8PfS/96XPyqeahgk=)
+    valid-time: 300
+  refresh:
+    password: ENC(M1G9NRqgFLIwnPdNLZ9RqIJI6LSK6ezvYEJD9Ln343A=)
+    valid-time: 604800
+
