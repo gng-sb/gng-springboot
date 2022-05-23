@@ -14,7 +14,7 @@ import com.gng.springboot.board.model.BoardEntity;
 
 public interface BoardService {
 	 
-	public BoardEntity createBoard(BoardEntity boardEntity);
+	public BoardDto createBoard(BoardDto boardDto);
 	
 	public List<BoardEntity> searchAllBoard();
 	

@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gng.springboot.board.model.BoardDto;
 import com.gng.springboot.board.model.BoardEntity;
-import com.gng.springboot.board.service.BoardServiceImpl;
+import com.gng.springboot.board.service.BoardService;
 import com.gng.springboot.commons.constant.ResponseCode;
 import com.gng.springboot.commons.model.ResponseDto;
 
@@ -37,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/board")
 @RestController
 public class BoardController {
-	private final BoardServiceImpl boardServiceImpl;
+	private final BoardService boardServiceImpl;
 	// 페이징 개수 - 20개 단위
 	// 페이징 https://devlog-wjdrbs96.tistory.com/414
 	// selectBoard(Pageable pageable)							(BODY 없음) 페이지 최초 가져오기	: GET /board
@@ -59,16 +60,18 @@ public class BoardController {
 	}
 	
 	@PostMapping(value = "", produces = {MediaTypes.HAL_JSON_VALUE})
-	public ResponseEntity<ResponseDto<BoardEntity>> createBoard(
-			@Valid @RequestBody(required = true) BoardEntity boardEntity
+	public ResponseEntity<ResponseDto<BoardDto>> createBoard(
+			@Valid @RequestBody(required = true) BoardDto boardDto
 			){
-		ResponseDto<BoardEntity> responseDto = new ResponseDto<>(ResponseCode.BOARD_CREATE_SUCCESS, boardServiceImpl.createBoard(boardEntity));
+		ResponseDto<BoardDto> responseDto = new ResponseDto<>(
+						ResponseCode.BOARD_CREATE_SUCCESS, boardServiceImpl.createBoard(boardDto)
+				);
 		
 		return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
 	}
 	
 //	@PostMapping("")
-//	public BoardEntity createBoard(@RequestBody BoardDto boardDto) {
+//	public BoardDto createBoard(@RequestBody BoardDto boardDto) {
 //		return boardServiceImpl.createBoard(boardDto);
 //	}
 	

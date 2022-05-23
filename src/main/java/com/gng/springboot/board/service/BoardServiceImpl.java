@@ -3,8 +3,11 @@ package com.gng.springboot.board.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gng.springboot.board.model.BoardDto;
 import com.gng.springboot.board.model.BoardEntity;
 import com.gng.springboot.board.repository.BoardRepository;
 
@@ -19,13 +22,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class BoardServiceImpl implements BoardService {
+	@Autowired
+	ModelMapper modelMapper;
+	
 	private final BoardRepository boardRepository;
 	
-	@Override
-	public BoardEntity createBoard(BoardEntity boardEntity) {
+	public BoardDto createBoard(final BoardDto boardDto) {
+		BoardEntity boardEntity = modelMapper.map(boardDto, BoardEntity.class);
+		BoardEntity createdBoardEntity = boardRepository.save(boardEntity);
 		
+		BoardDto createBoardDto = modelMapper.map(createdBoardEntity, BoardDto.class);
 		
-		return boardRepository.save(boardEntity);
+		return createBoardDto;
 	}
 
 	@Override
